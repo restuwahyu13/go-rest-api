@@ -7,7 +7,8 @@ import (
 
 func main() {
 	router := gin.Default()
-	router.GET("/", controller.LoginController)
+	router.GET("/login", controller.LoginController)
+	router.GET("/register", controller.RegisterController)
 
 	router.Run(":3000")
 }

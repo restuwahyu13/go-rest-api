@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gionic/gin"
 )
 
-func LoginController(ctx *gin.Context) {
+func RegisterController(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "hello wordl login",
+		"message": "hello wordl register",
 	})
 }
