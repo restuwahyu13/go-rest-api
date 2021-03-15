@@ -5,8 +5,10 @@ import (
 	controller "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers"
 )
 
-func initAuthRouter(r *gin.Engine) {
-	r.POST("/login", controller.LoginController)
-	r.POST("/register", controller.RegisterController)
-	return
+func InitAuthRoutes(r *gin.Engine) {
+	authRoutes := r.Group("api/v1")
+	{
+		authRoutes.POST("/login", controller.LoginController)
+		authRoutes.POST("/register", controller.RegisterController)
+	}
 }
