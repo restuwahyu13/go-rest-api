@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/gin-gionic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 func LoginController(ctx *gin.Context) {
