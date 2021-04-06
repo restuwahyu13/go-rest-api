@@ -12,7 +12,6 @@ func main() {
 	// init all route
 	route.InitAuthRoutes(router)
 	route.InitStudentRoutes(router)
-	route.InitTeacherRoutes(router)
 
 	// run server
 	router.Run(":3000")
