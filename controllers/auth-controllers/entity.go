@@ -4,12 +4,12 @@ import (
 	"time"
 )
 
-type EntityRegister struct {
+type EntityUsers struct {
 	ID        uint
-	Name      string `gorm:"not null"`
-	Npm       uint32 `gorm:"unique;not null"`
-	Fak       string `gorm:"not null"`
-	Bid       string `gorm:"not null"`
+	Fullname  string `gorm:not null`
+	Email     string `gorm:"unique;not null"`
+	Password  string `gorm:"unique;not null"`
+	Active    string `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

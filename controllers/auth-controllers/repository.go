@@ -8,11 +8,12 @@ import (
 )
 
 type Repository interface {
-	FindOneAndCreate(payload EntityRegister) (EntityRegister, error)
-	Find() (EntityRegister, error)
-	FindById(id uint) (EntityRegister, error)
-	FindOneAndDelete(id uint) error
-	FindOneAndUpdate(id uint, payload EntityRegister) error
+	RegisterRepository(payload EntityUsers) (EntityUsers, error)
+	LoginRepository(payload EntityUsers) (EntityUsers, error)
+	// ActivationRepository(token string, payload EntityUsers) (EntityUsers, error)
+	// ForgotRepository(payload EntityUsers) (EntityUsers, error)
+	// ResendRepository(payload EntityUsers) (EntityUsers, error)
+	// ResetRepository(token, password, cpassword string) (EntityUsers, error)
 }
 
 type repository struct {
@@ -23,27 +24,33 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) FindOneAndCreate(payload EntityRegister) (EntityRegister, error) {
+func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error) {
 
 	trx := r.db.Begin()
 
-	var student EntityRegister
+	var users EntityUsers
 
-	errorCheck := trx.Where("npm", payload.Npm).First(&student).Error
+	result := trx.Where("email", payload.Email).First(&users)
+	affectedResult := result.RowsAffected
+	errorResult := result.Error
 
-	if errorCheck != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorCheck.Error())
-		return payload, errorCheck
+	if affectedResult > 0 {
+		logrus.Fatal("email already taken")
+		return payload, errorResult
 	}
 
-	student.Name = payload.Name
-	student.Npm = payload.Npm
-	student.Bid = payload.Bid
-	student.Fak = payload.Fak
-	student.CreatedAt = time.Now()
+	if errorResult != nil {
+		defer trx.Rollback()
+		logrus.Fatal(errorResult.Error())
+		return payload, errorResult
+	}
 
-	errorCreate := trx.Create(&student).Error
+	users.Fullname = payload.Fullname
+	users.Email = payload.Email
+	users.Password = payload.Password
+	users.CreatedAt = time.Now()
+
+	errorCreate := trx.Create(&users).Error
 
 	if errorCreate != nil {
 		defer trx.Rollback()
@@ -51,91 +58,98 @@ func (r *repository) FindOneAndCreate(payload EntityRegister) (EntityRegister, e
 		return payload, errorCreate
 	}
 
-	return student, nil
+	return users, nil
 }
 
-func (r *repository) Find() (EntityRegister, error) {
+func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, error) {
 	trx := r.db.Begin()
 
-	var students EntityRegister
+	var users EntityUsers
 
-	errorResults := trx.Select(&students).Error
+	results := trx.Select(&users)
+	affectedResult := results.RowsAffected
+	errorResult := results.Error
 
-	if errorResults != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorResults.Error())
-		return students, errorResults
+	if affectedResult > 0 {
+		logrus.Fatal("users is not exists")
+		return users, errorResult
 	}
 
-	return students, nil
+	if errorResult != nil {
+		defer trx.Rollback()
+		logrus.Fatal(errorResult.Error())
+		return users, errorResult
+	}
+
+	return users, nil
 }
 
-func (r *repository) FindById(id uint) (EntityRegister, error) {
-	trx := r.db.Begin()
+// func (r *repository) FindById(id uint) (EntityUsers, error) {
+// 	trx := r.db.Begin()
 
-	var students EntityRegister
+// 	var users EntityUsers
 
-	errorResults := trx.Where("ID", id).Select(&students).Error
+// 	errorResults := trx.Where("ID", id).Select(&users).Error
 
-	if errorResults != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorResults.Error())
-		return students, errorResults
-	}
+// 	if errorResults != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorResults.Error())
+// 		return users, errorResults
+// 	}
 
-	return students, nil
-}
+// 	return users, nil
+// }
 
-func (r *repository) FindOneAndDelete(id uint) (EntityRegister, error) {
-	trx := r.db.Begin()
+// func (r *repository) FindOneAndDelete(id uint) (EntityUsers, error) {
+// 	trx := r.db.Begin()
 
-	var students EntityRegister
+// 	var users EntityUsers
 
-	errorCheck := trx.Where("ID", id).Select(&students).Error
+// 	errorCheck := trx.Where("ID", id).Select(&users).Error
 
-	if errorCheck != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorCheck.Error())
-		return students, errorCheck
-	}
+// 	if errorCheck != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorCheck.Error())
+// 		return users, errorCheck
+// 	}
 
-	errorDelete := trx.Where("ID", id).Delete(&students).Error
+// 	errorDelete := trx.Where("ID", id).Delete(&users).Error
 
-	if errorDelete != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorCheck.Error())
-		return students, errorCheck
-	}
+// 	if errorDelete != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorCheck.Error())
+// 		return users, errorCheck
+// 	}
 
-	return students, nil
-}
+// 	return users, nil
+// }
 
-func (r *repository) FindOneAndUpdate(id uint, payload EntityRegister) (EntityRegister, error) {
-	trx := r.db.Begin()
+// func (r *repository) FindOneAndUpdate(id uint, payload EntityUsers) (EntityUsers, error) {
+// 	trx := r.db.Begin()
 
-	var student EntityRegister
+// 	var users EntityUsers
 
-	errorCheck := trx.Where("ID", id).Select(&student).Error
+// 	errorCheck := trx.Where("ID", id).Select(&users).Error
 
-	if errorCheck != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorCheck.Error())
-		return student, errorCheck
-	}
+// 	if errorCheck != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorCheck.Error())
+// 		return users, errorCheck
+// 	}
 
-	student.Name = payload.Name
-	student.Npm = payload.Npm
-	student.Fak = payload.Fak
-	student.Bid = payload.Bid
-	student.UpdatedAt = time.Now()
+// 	users.Name = payload.Name
+// 	users.Npm = payload.Npm
+// 	users.Fak = payload.Fak
+// 	users.Bid = payload.Bid
+// 	users.UpdatedAt = time.Now()
 
-	errorUpdate := trx.Where("id", id).Update("id", &student).Error
+// 	errorUpdate := trx.Where("id", id).Update("id", &users).Error
 
-	if errorUpdate != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorCheck.Error())
-		return student, errorCheck
-	}
+// 	if errorUpdate != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorCheck.Error())
+// 		return users, errorCheck
+// 	}
 
-	return student, nil
-}
+// 	return users, nil
+// }

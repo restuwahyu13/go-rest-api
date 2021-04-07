@@ -1,8 +1,32 @@
 package controllers
 
 type InputRegister struct {
-	Name string `json:"name" binding:"required"`
-	Npm  uint   `json:"npm" binding:"required"`
-	Bid  string `json:"bid" binding:"required"`
-	Fak  string `json:"fak" binding:"required"`
+	Fullname string `json:fullname binding:required`
+	Email    string `json:"email" binding:"required"`
+	Password uint   `json:"password" binding:"required"`
+}
+
+type InputLogin struct {
+	Email    string `json:"email" binding:"required"`
+	Password uint   `json:"password" binding:"required"`
+}
+
+type InputActivation struct {
+	Token    string `uri:"token" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"email" binding:"required"`
+}
+
+type InputForgotPassword struct {
+	Email string `json:"email"`
+}
+
+type inputResendActivation struct {
+	Email string `json:"email"`
+}
+
+type InputResetPassword struct {
+	Token     string `uri:"token" binding:"required"`
+	password  string `json:"password" binding:"required"`
+	cpassword string `json:"cpassword" binding:"required"`
 }
