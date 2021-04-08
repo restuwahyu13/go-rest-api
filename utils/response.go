@@ -1,18 +1,23 @@
 package utils
 
+import (
+	"github.com/gin-gonic/gin"
+)
+
 type Responses struct {
-	StatusCode uint
+	StatusCode int
 	Method     string
 	Message    string
 	Data       interface{}
 }
 
-func APIResponse(Message string, StatusCode uint, Method string, Data interface{}) Responses {
+func APIResponse(c *gin.Context, Message string, StatusCode int, Method string, Data interface{}) {
 	jsonResponse := Responses{
 		StatusCode: StatusCode,
 		Method:     Method,
 		Message:    Message,
 		Data:       Data,
 	}
-	return jsonResponse
+
+	c.JSON(StatusCode, jsonResponse)
 }

@@ -32,7 +32,7 @@ func (s *service) RegisterService(input InputRegister) (EntityUsers, error) {
 	resultRegister, errRegister := s.repository.RegisterRepository(users)
 
 	if errRegister != nil {
-		logrus.Fatal(errRegister.Error())
+		logrus.Info(errRegister.Error())
 		return resultRegister, errRegister
 	}
 

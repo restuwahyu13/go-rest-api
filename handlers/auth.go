@@ -17,10 +17,10 @@ func NewHandler(service auth.Service) *handler {
 	return &handler{service: service}
 }
 
-func (h *handler) RegisterHandler(c *gin.Context) {
+func (h *handler) RegisterHandler(ctx *gin.Context) {
 	var input auth.InputRegister
 
-	err := c.ShouldBindJSON(&input)
+	err := ctx.ShouldBindJSON(&input)
 
 	if err != nil {
 		logrus.Fatal(err.Error())
@@ -30,11 +30,9 @@ func (h *handler) RegisterHandler(c *gin.Context) {
 	resultRegister, errRegister := h.service.RegisterService(input)
 
 	if errRegister != nil {
-		response := utils.APIResponse("Register new account failed", http.StatusForbidden, http.MethodPost, nil)
-		c.JSON(http.StatusOK, response)
+		utils.APIResponse(ctx, "Register new account failed", http.StatusForbidden, http.MethodPost, nil)
 		return
 	}
 
-	response := utils.APIResponse("Register new account successfully", http.StatusOK, http.MethodPost, resultRegister)
-	c.JSON(http.StatusOK, response)
+	utils.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, resultRegister)
 }

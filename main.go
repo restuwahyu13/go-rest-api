@@ -18,7 +18,8 @@ func main() {
 	db, err := gorm.Open(postgres.Open(databaseURI), &gorm.Config{})
 
 	if err != nil {
-		logrus.Fatal(err.Error())
+		logrus.Info(err.Error())
+		return
 	}
 
 	if utils.GodotEnv("NODE_ENV") != "production" {
@@ -30,7 +31,8 @@ func main() {
 	)
 
 	if err != nil {
-		logrus.Fatal(err.Error())
+		logrus.Info(err.Error())
+		return
 	}
 	/*
 		@description Setup Router

@@ -37,7 +37,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 	if errorResult != nil {
 		defer transaction.Rollback()
-		logrus.Fatal(errorResult.Error())
+		logrus.Info(errorResult.Error())
 		return payload, errorResult
 	}
 
@@ -46,7 +46,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 	if errorCreate != nil {
 		defer transaction.Rollback()
-		logrus.Fatal(errorCreate.Error())
+		logrus.Info(errorCreate.Error())
 		return payload, errorCreate
 	}
 
@@ -63,13 +63,13 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 // 	errorResult := results.Error
 
 // 	if affectedResult < 1 {
-// 		logrus.Fatal("users is not exists")
+// 		logrus.Info("users is not exists")
 // 		return users, errorResult
 // 	}
 
 // 	if errorResult != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorResult.Error())
+// 		logrus.Info(errorResult.Error())
 // 		return users, errorResult
 // 	}
 
@@ -85,7 +85,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 // 	if errorResults != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorResults.Error())
+// 		logrus.Info(errorResults.Error())
 // 		return users, errorResults
 // 	}
 
@@ -101,7 +101,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 // 	if errorCheck != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorCheck.Error())
+// 		logrus.Info(errorCheck.Error())
 // 		return users, errorCheck
 // 	}
 
@@ -109,7 +109,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 // 	if errorDelete != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorCheck.Error())
+// 		logrus.Info(errorCheck.Error())
 // 		return users, errorCheck
 // 	}
 
@@ -125,7 +125,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 // 	if errorCheck != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorCheck.Error())
+// 		logrus.Info(errorCheck.Error())
 // 		return users, errorCheck
 // 	}
 
@@ -139,7 +139,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 // 	if errorUpdate != nil {
 // 		defer trx.Rollback()
-// 		logrus.Fatal(errorCheck.Error())
+// 		logrus.Info(errorCheck.Error())
 // 		return users, errorCheck
 // 	}
 
