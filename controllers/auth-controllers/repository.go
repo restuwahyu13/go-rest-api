@@ -1,15 +1,13 @@
-package controllers
+package auth
 
 import (
-	"time"
-
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
 	RegisterRepository(payload EntityUsers) (EntityUsers, error)
-	LoginRepository(payload EntityUsers) (EntityUsers, error)
+	// LoginRepository(payload EntityUsers) (EntityUsers, error)
 	// ActivationRepository(token string, payload EntityUsers) (EntityUsers, error)
 	// ForgotRepository(payload EntityUsers) (EntityUsers, error)
 	// ResendRepository(payload EntityUsers) (EntityUsers, error)
@@ -28,14 +26,19 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 	trx := r.db.Begin()
 
-	var users EntityUsers
+	users := EntityUsers{
+		Fullname:  payload.Fullname,
+		Email:     payload.Email,
+		Password:  payload.Password,
+		CreatedAt: payload.CreatedAt,
+	}
 
 	result := trx.Where("email", payload.Email).First(&users)
 	affectedResult := result.RowsAffected
 	errorResult := result.Error
 
 	if affectedResult > 0 {
-		logrus.Fatal("email already taken")
+		logrus.Error("email already taken")
 		return payload, errorResult
 	}
 
@@ -44,11 +47,6 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 		logrus.Fatal(errorResult.Error())
 		return payload, errorResult
 	}
-
-	users.Fullname = payload.Fullname
-	users.Email = payload.Email
-	users.Password = payload.Password
-	users.CreatedAt = time.Now()
 
 	errorCreate := trx.Create(&users).Error
 
@@ -61,28 +59,28 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 	return users, nil
 }
 
-func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, error) {
-	trx := r.db.Begin()
+// func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, error) {
+// 	trx := r.db.Begin()
 
-	var users EntityUsers
+// 	var users EntityUsers
 
-	results := trx.Select(&users)
-	affectedResult := results.RowsAffected
-	errorResult := results.Error
+// 	results := trx.Select(&users)
+// 	affectedResult := results.RowsAffected
+// 	errorResult := results.Error
 
-	if affectedResult > 0 {
-		logrus.Fatal("users is not exists")
-		return users, errorResult
-	}
+// 	if affectedResult < 1 {
+// 		logrus.Fatal("users is not exists")
+// 		return users, errorResult
+// 	}
 
-	if errorResult != nil {
-		defer trx.Rollback()
-		logrus.Fatal(errorResult.Error())
-		return users, errorResult
-	}
+// 	if errorResult != nil {
+// 		defer trx.Rollback()
+// 		logrus.Fatal(errorResult.Error())
+// 		return users, errorResult
+// 	}
 
-	return users, nil
-}
+// 	return users, nil
+// }
 
 // func (r *repository) FindById(id uint) (EntityUsers, error) {
 // 	trx := r.db.Begin()

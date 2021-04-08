@@ -14,11 +14,11 @@ func HashPassword(password string) []byte {
 	return result
 }
 
-func ComparePassword(hashPassword []byte, password string) {
+func ComparePassword(hashPassword []byte, password string) error {
 	pw := []byte(password)
 	err := bcrypt.CompareHashAndPassword(hashPassword, pw)
 	if err != nil {
 		logrus.Fatal(err.Error())
-		return
 	}
+	return err
 }

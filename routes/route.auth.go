@@ -2,13 +2,23 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	controller "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers"
+	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers"
+	handler "github.com/restuwahyu13/gin-rest-api/handlers"
+	"gorm.io/gorm"
 )
 
-func InitAuthRoutes(r *gin.Engine) {
-	authRoutes := r.Group("api/v1")
-	{
-		authRoutes.POST("/login", controller.LoginController)
-		authRoutes.POST("/register", controller.RegisterController)
-	}
+func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
+
+	/**
+	@description Total Controller
+	*/
+	authRepository := auth.NewRepository(db)
+	authService := auth.NewService(authRepository)
+	authHandlers := handler.NewHandler(authService)
+
+	/**
+	@description Auth Route
+	*/
+	groupRoute := route.Group("/api/v1")
+	groupRoute.POST("/register", authHandlers.RegisterHandler)
 }
