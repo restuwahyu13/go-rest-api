@@ -27,13 +27,14 @@ func (h *handler) RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	_, errRegister := h.service.RegisterService(input)
+	resultRegister, errRegister := h.service.RegisterService(input)
 
 	if errRegister != nil {
-		logrus.Fatal(errRegister.Error())
+		response := utils.APIResponse("Register new account failed", http.StatusForbidden, http.MethodPost, nil)
+		c.JSON(http.StatusOK, response)
 		return
 	}
 
-	response := utils.APIResponse("Register new account successfully", http.StatusOK, http.MethodGet, nil)
+	response := utils.APIResponse("Register new account successfully", http.StatusOK, http.MethodPost, resultRegister)
 	c.JSON(http.StatusOK, response)
 }

@@ -1,13 +1,13 @@
 package utils
 
 type Responses struct {
-	StatusCode uint8
+	StatusCode uint
 	Method     string
 	Message    string
 	Data       interface{}
 }
 
-func APIResponse(Message string, StatusCode uint8, Method string, Data interface{}) Responses {
+func APIResponse(Message string, StatusCode uint, Method string, Data interface{}) Responses {
 	jsonResponse := Responses{
 		StatusCode: StatusCode,
 		Method:     Method,

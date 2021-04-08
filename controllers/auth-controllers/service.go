@@ -29,14 +29,14 @@ func (s *service) RegisterService(input InputRegister) (EntityUsers, error) {
 		CreatedAt: time.Now(),
 	}
 
-	result, err := s.repository.RegisterRepository(users)
+	resultRegister, errRegister := s.repository.RegisterRepository(users)
 
-	if err != nil {
-		logrus.Fatal(err.Error())
-		return result, err
+	if errRegister != nil {
+		logrus.Fatal(errRegister.Error())
+		return resultRegister, errRegister
 	}
 
-	return result, err
+	return resultRegister, nil
 }
 
 // func (ctx *service) LoginService(payload InputLogin) (EntityUsers, error) {

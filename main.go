@@ -14,17 +14,15 @@ func main() {
 	/*
 		@description Setup Database Connection
 	*/
-	databaseURI := utils.GodotEnv("DATABASE_URL")
+	databaseURI := utils.GodotEnv("DATABASE_URI")
 	db, err := gorm.Open(postgres.Open(databaseURI), &gorm.Config{})
 
 	if err != nil {
 		logrus.Fatal(err.Error())
-		return
 	}
 
 	if utils.GodotEnv("NODE_ENV") != "production" {
 		logrus.Info("Connection to Database is Good! 👍")
-		return
 	}
 
 	err = db.AutoMigrate(
@@ -33,7 +31,6 @@ func main() {
 
 	if err != nil {
 		logrus.Fatal(err.Error())
-		return
 	}
 	/*
 		@description Setup Router
@@ -46,5 +43,5 @@ func main() {
 	/*
 		@description Setup Server
 	*/
-	router.Run(":" + utils.GodotEnv("PORT"))
+	router.Run(":4000")
 }

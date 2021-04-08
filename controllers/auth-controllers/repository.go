@@ -24,7 +24,7 @@ func NewRepository(db *gorm.DB) *repository {
 
 func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error) {
 
-	trx := r.db.Begin()
+	transaction := r.db.Begin()
 
 	users := EntityUsers{
 		Fullname:  payload.Fullname,
@@ -33,30 +33,24 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 		CreatedAt: payload.CreatedAt,
 	}
 
-	result := trx.Where("email", payload.Email).First(&users)
-	affectedResult := result.RowsAffected
-	errorResult := result.Error
-
-	if affectedResult > 0 {
-		logrus.Error("email already taken")
-		return payload, errorResult
-	}
+	errorResult := transaction.Where("email", payload.Email).First(&users).Error
 
 	if errorResult != nil {
-		defer trx.Rollback()
+		defer transaction.Rollback()
 		logrus.Fatal(errorResult.Error())
 		return payload, errorResult
 	}
 
-	errorCreate := trx.Create(&users).Error
+	errorCreate := transaction.Create(&users).Error
+	transaction.Commit()
 
 	if errorCreate != nil {
-		defer trx.Rollback()
+		defer transaction.Rollback()
 		logrus.Fatal(errorCreate.Error())
 		return payload, errorCreate
 	}
 
-	return users, nil
+	return payload, nil
 }
 
 // func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, error) {
