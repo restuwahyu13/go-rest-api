@@ -37,7 +37,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 	if errorResult != nil {
 		defer transaction.Rollback()
-		logrus.Info(errorResult.Error())
+		logrus.Error(errorResult.Error())
 		return payload, errorResult
 	}
 
@@ -46,7 +46,7 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 
 	if errorCreate != nil {
 		defer transaction.Rollback()
-		logrus.Info(errorCreate.Error())
+		logrus.Error(errorCreate.Error())
 		return payload, errorCreate
 	}
 

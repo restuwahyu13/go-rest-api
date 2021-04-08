@@ -18,12 +18,13 @@ func main() {
 	db, err := gorm.Open(postgres.Open(databaseURI), &gorm.Config{})
 
 	if err != nil {
-		logrus.Info(err.Error())
+		defer logrus.Info("Connection to Database Failed")
+		logrus.Error(err.Error())
 		return
 	}
 
 	if utils.GodotEnv("NODE_ENV") != "production" {
-		logrus.Info("Connection to Database is Good! 👍")
+		logrus.Info("Connection to Database Successfullye")
 	}
 
 	err = db.AutoMigrate(
@@ -31,7 +32,7 @@ func main() {
 	)
 
 	if err != nil {
-		logrus.Info(err.Error())
+		logrus.Error(err.Error())
 		return
 	}
 	/*
