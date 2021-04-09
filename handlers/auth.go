@@ -30,9 +30,11 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 	resultRegister, errRegister := h.service.RegisterService(input)
 
 	if errRegister != nil {
-		utils.APIResponse(ctx, "Register new account failed", http.StatusForbidden, http.MethodPost, nil)
+		response := utils.APIResponse("Register new account failed", http.StatusForbidden, http.MethodPost, nil)
+		ctx.JSON(http.StatusForbidden, response)
 		return
 	}
 
-	utils.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, resultRegister)
+	response := utils.APIResponse("Register new account successfully", http.StatusOK, http.MethodPost, resultRegister)
+	ctx.JSON(http.StatusOK, response)
 }

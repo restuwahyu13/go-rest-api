@@ -24,7 +24,7 @@ func main() {
 	}
 
 	if utils.GodotEnv("NODE_ENV") != "production" {
-		logrus.Info("Connection to Database Successfullye")
+		logrus.Info("Connection to Database Successfully")
 	}
 
 	err = db.AutoMigrate(
