@@ -8,7 +8,7 @@ type InputRegister struct {
 
 type InputLogin struct {
 	Email    string `json:"email" binding:"required"`
-	Password uint   `json:"password" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type InputActivation struct {

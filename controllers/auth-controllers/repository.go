@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/restuwahyu13/gin-rest-api/utils"
 	"gorm.io/gorm"
 )
 
 type Repository interface {
-	RegisterRepository(payload EntityUsers) (EntityUsers, error)
-	// LoginRepository(payload EntityUsers) (EntityUsers, error)
+	RegisterRepository(payload EntityUsers) (EntityUsers, string)
+	LoginRepository(payload EntityUsers) (EntityUsers, string)
 	// ActivationRepository(token string, payload EntityUsers) (EntityUsers, error)
 	// ForgotRepository(payload EntityUsers) (EntityUsers, error)
 	// ResendRepository(payload EntityUsers) (EntityUsers, error)
@@ -22,9 +22,10 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error) {
+func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, string) {
 
 	transaction := r.db.Begin()
+	errorCode := make(chan string, 2)
 
 	users := EntityUsers{
 		Fullname:  payload.Fullname,
@@ -33,115 +34,54 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, error
 		CreatedAt: payload.CreatedAt,
 	}
 
-	errorResult := transaction.Where("email", payload.Email).First(&users).Error
+	checkUserAccount := transaction.Where("email", payload.Email).First(&users).RowsAffected
 
-	if errorResult != nil {
-		defer transaction.Rollback()
-		logrus.Error(errorResult.Error())
-		return payload, errorResult
+	if checkUserAccount > 0 {
+		errorCode <- "REGISTER_CONFLICT_409"
 	}
 
-	errorCreate := transaction.Create(&users).Error
+	addNewUser := transaction.Create(&users).Error
 	transaction.Commit()
 
-	if errorCreate != nil {
-		defer transaction.Rollback()
-		logrus.Error(errorCreate.Error())
-		return payload, errorCreate
+	if addNewUser != nil {
+		errorCode <- "REGISTER_FAILED_403"
+		return users, <-errorCode
+	} else {
+		errorCode <- "nil"
 	}
 
-	return payload, nil
+	return users, <-errorCode
 }
 
-// func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, error) {
-// 	trx := r.db.Begin()
+func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, string) {
+	trx := r.db.Begin()
+	errorCode := make(chan string, 2)
 
-// 	var users EntityUsers
+	users := EntityUsers{
+		Email:    payload.Email,
+		Password: payload.Password,
+	}
 
-// 	results := trx.Select(&users)
-// 	affectedResult := results.RowsAffected
-// 	errorResult := results.Error
+	checkUserAccount := trx.Where("email", payload.Email).First(&users).Error
 
-// 	if affectedResult < 1 {
-// 		logrus.Info("users is not exists")
-// 		return users, errorResult
-// 	}
+	if checkUserAccount != nil {
+		errorCode <- "LOGIN_NOT_FOUND_404"
+		return users, <-errorCode
+	}
 
-// 	if errorResult != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorResult.Error())
-// 		return users, errorResult
-// 	}
+	if !users.Active {
+		errorCode <- "LOGIN_NOT_ACTIVE_403"
+		return users, <-errorCode
+	}
 
-// 	return users, nil
-// }
+	comparePassword := utils.ComparePassword(users.Password, payload.Password)
 
-// func (r *repository) FindById(id uint) (EntityUsers, error) {
-// 	trx := r.db.Begin()
+	if comparePassword != nil {
+		errorCode <- "LOGIN_WRONG_PASSWORD_403"
+		return users, <-errorCode
+	} else {
+		errorCode <- "nil"
+	}
 
-// 	var users EntityUsers
-
-// 	errorResults := trx.Where("ID", id).Select(&users).Error
-
-// 	if errorResults != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorResults.Error())
-// 		return users, errorResults
-// 	}
-
-// 	return users, nil
-// }
-
-// func (r *repository) FindOneAndDelete(id uint) (EntityUsers, error) {
-// 	trx := r.db.Begin()
-
-// 	var users EntityUsers
-
-// 	errorCheck := trx.Where("ID", id).Select(&users).Error
-
-// 	if errorCheck != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorCheck.Error())
-// 		return users, errorCheck
-// 	}
-
-// 	errorDelete := trx.Where("ID", id).Delete(&users).Error
-
-// 	if errorDelete != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorCheck.Error())
-// 		return users, errorCheck
-// 	}
-
-// 	return users, nil
-// }
-
-// func (r *repository) FindOneAndUpdate(id uint, payload EntityUsers) (EntityUsers, error) {
-// 	trx := r.db.Begin()
-
-// 	var users EntityUsers
-
-// 	errorCheck := trx.Where("ID", id).Select(&users).Error
-
-// 	if errorCheck != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorCheck.Error())
-// 		return users, errorCheck
-// 	}
-
-// 	users.Name = payload.Name
-// 	users.Npm = payload.Npm
-// 	users.Fak = payload.Fak
-// 	users.Bid = payload.Bid
-// 	users.UpdatedAt = time.Now()
-
-// 	errorUpdate := trx.Where("id", id).Update("id", &users).Error
-
-// 	if errorUpdate != nil {
-// 		defer trx.Rollback()
-// 		logrus.Info(errorCheck.Error())
-// 		return users, errorCheck
-// 	}
-
-// 	return users, nil
-// }
+	return users, <-errorCode
+}

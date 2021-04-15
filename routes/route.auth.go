@@ -21,4 +21,5 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	*/
 	groupRoute := route.Group("/api/v1")
 	groupRoute.POST("/register", authHandlers.RegisterHandler)
+	groupRoute.POST("/login", authHandlers.LoginHandler)
 }

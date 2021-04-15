@@ -14,11 +14,9 @@ func HashPassword(password string) []byte {
 	return result
 }
 
-func ComparePassword(hashPassword []byte, password string) error {
+func ComparePassword(hashPassword string, password string) error {
 	pw := []byte(password)
-	err := bcrypt.CompareHashAndPassword(hashPassword, pw)
-	if err != nil {
-		logrus.Fatal(err.Error())
-	}
+	hw := []byte(hashPassword)
+	err := bcrypt.CompareHashAndPassword(hw, pw)
 	return err
 }
