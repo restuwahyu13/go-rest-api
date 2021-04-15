@@ -19,7 +19,7 @@ func main() {
 
 	if err != nil {
 		defer logrus.Info("Connection to Database Failed")
-		logrus.Error(err.Error())
+		logrus.Fatal(err.Error())
 		return
 	}
 
@@ -32,7 +32,7 @@ func main() {
 	)
 
 	if err != nil {
-		logrus.Error(err.Error())
+		logrus.Fatal(err.Error())
 		return
 	}
 	/*
@@ -46,5 +46,5 @@ func main() {
 	/*
 		@description Setup Server
 	*/
-	router.Run(":4000")
+	router.Run(":" + utils.GodotEnv("PORT"))
 }
