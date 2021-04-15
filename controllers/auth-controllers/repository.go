@@ -6,8 +6,8 @@ import (
 )
 
 type Repository interface {
-	RegisterRepository(payload EntityUsers) (EntityUsers, string)
-	LoginRepository(payload EntityUsers) (EntityUsers, string)
+	RegisterRepository(payload *EntityUsers) (*EntityUsers, string)
+	LoginRepository(payload *EntityUsers) (*EntityUsers, string)
 	// ActivationRepository(token string, payload EntityUsers) (EntityUsers, error)
 	// ForgotRepository(payload EntityUsers) (EntityUsers, error)
 	// ResendRepository(payload EntityUsers) (EntityUsers, error)
@@ -22,7 +22,7 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, string) {
+func (r *repository) RegisterRepository(payload *EntityUsers) (*EntityUsers, string) {
 
 	transaction := r.db.Begin()
 	errorCode := make(chan string, 2)
@@ -45,15 +45,15 @@ func (r *repository) RegisterRepository(payload EntityUsers) (EntityUsers, strin
 
 	if addNewUser != nil {
 		errorCode <- "REGISTER_FAILED_403"
-		return users, <-errorCode
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}
 
-	return users, <-errorCode
+	return &users, <-errorCode
 }
 
-func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, string) {
+func (r *repository) LoginRepository(payload *EntityUsers) (*EntityUsers, string) {
 	trx := r.db.Begin()
 	errorCode := make(chan string, 2)
 
@@ -66,22 +66,22 @@ func (r *repository) LoginRepository(payload EntityUsers) (EntityUsers, string) 
 
 	if checkUserAccount != nil {
 		errorCode <- "LOGIN_NOT_FOUND_404"
-		return users, <-errorCode
+		return &users, <-errorCode
 	}
 
 	if !users.Active {
 		errorCode <- "LOGIN_NOT_ACTIVE_403"
-		return users, <-errorCode
+		return &users, <-errorCode
 	}
 
 	comparePassword := utils.ComparePassword(users.Password, payload.Password)
 
 	if comparePassword != nil {
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"
-		return users, <-errorCode
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}
 
-	return users, <-errorCode
+	return &users, <-errorCode
 }

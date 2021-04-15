@@ -7,8 +7,8 @@ import (
 )
 
 type Service interface {
-	RegisterService(input InputRegister) (EntityUsers, string)
-	LoginService(input InputLogin) (EntityUsers, string)
+	RegisterService(input *InputRegister) (*EntityUsers, string)
+	LoginService(input *InputLogin) (*EntityUsers, string)
 }
 
 type service struct {
@@ -19,7 +19,7 @@ func NewService(repository Repository) *service {
 	return &service{repository: repository}
 }
 
-func (s *service) RegisterService(input InputRegister) (EntityUsers, string) {
+func (s *service) RegisterService(input *InputRegister) (*EntityUsers, string) {
 
 	users := EntityUsers{
 		Fullname:  input.Fullname,
@@ -28,19 +28,19 @@ func (s *service) RegisterService(input InputRegister) (EntityUsers, string) {
 		CreatedAt: time.Now(),
 	}
 
-	resultRegister, errRegister := s.repository.RegisterRepository(users)
+	resultRegister, errRegister := s.repository.RegisterRepository(&users)
 
 	return resultRegister, errRegister
 }
 
-func (s *service) LoginService(input InputLogin) (EntityUsers, string) {
+func (s *service) LoginService(input *InputLogin) (*EntityUsers, string) {
 
 	user := EntityUsers{
 		Email:    input.Email,
 		Password: input.Password,
 	}
 
-	loginResult, errLogin := s.repository.LoginRepository(user)
+	resultLogin, errLogin := s.repository.LoginRepository(&user)
 
-	return loginResult, errLogin
+	return resultLogin, errLogin
 }

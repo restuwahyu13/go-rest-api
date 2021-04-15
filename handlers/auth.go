@@ -27,7 +27,7 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 		return
 	}
 
-	_, errRegister := h.service.RegisterService(input)
+	_, errRegister := h.service.RegisterService(&input)
 
 	if errRegister == "REGISTER_CONFLICT_409" {
 		response := utils.APIResponse("Email already exist", http.StatusConflict, http.MethodPost, nil)
@@ -55,7 +55,7 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	_, errLogin := h.service.LoginService(input)
+	_, errLogin := h.service.LoginService(&input)
 
 	if errLogin == "LOGIN_NOT_FOUND_404" {
 		response := utils.APIResponse("User account is not registered", http.StatusNotFound, http.MethodPost, nil)
