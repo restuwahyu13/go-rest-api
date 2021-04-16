@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers"
+	model "github.com/restuwahyu13/gin-rest-api/models"
 	route "github.com/restuwahyu13/gin-rest-api/routes"
 	"github.com/restuwahyu13/gin-rest-api/utils"
 	"github.com/sirupsen/logrus"
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	err = db.AutoMigrate(
-		&auth.EntityUsers{},
+		&model.EntityUsers{},
 	)
 
 	if err != nil {
