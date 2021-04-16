@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-	RegisterRepository(payload *model.EntityUsers) (*model.EntityUsers, string)
+	RegisterRepository(input *model.EntityUsers) (*model.EntityUsers, string)
 }
 
 type repository struct {
@@ -17,19 +17,19 @@ func NewRepositoryRegister(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) RegisterRepository(payload *model.EntityUsers) (*model.EntityUsers, string) {
+func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 
 	transaction := r.db.Begin()
 	errorCode := make(chan string, 2)
 
 	users := model.EntityUsers{
-		Fullname:  payload.Fullname,
-		Email:     payload.Email,
-		Password:  payload.Password,
-		CreatedAt: payload.CreatedAt,
+		Fullname:  input.Fullname,
+		Email:     input.Email,
+		Password:  input.Password,
+		CreatedAt: input.CreatedAt,
 	}
 
-	checkUserAccount := transaction.Where("email", payload.Email).First(&users).RowsAffected
+	checkUserAccount := transaction.Where("email", input.Email).First(&users).RowsAffected
 
 	if checkUserAccount > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"

@@ -7,7 +7,7 @@ import (
 )
 
 type Repository interface {
-	LoginRepository(payload *model.EntityUsers) (*model.EntityUsers, string)
+	LoginRepository(input *model.EntityUsers) (*model.EntityUsers, string)
 }
 
 type repository struct {
@@ -18,16 +18,16 @@ func NewRepositoryLogin(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) LoginRepository(payload *model.EntityUsers) (*model.EntityUsers, string) {
+func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 	trx := r.db.Begin()
 	errorCode := make(chan string, 2)
 
 	users := model.EntityUsers{
-		Email:    payload.Email,
-		Password: payload.Password,
+		Email:    input.Email,
+		Password: input.Password,
 	}
 
-	checkUserAccount := trx.Where("email", payload.Email).First(&users).Error
+	checkUserAccount := trx.Where("email", input.Email).First(&users).Error
 
 	if checkUserAccount != nil {
 		errorCode <- "LOGIN_NOT_FOUND_404"
@@ -39,7 +39,7 @@ func (r *repository) LoginRepository(payload *model.EntityUsers) (*model.EntityU
 		return &users, <-errorCode
 	}
 
-	comparePassword := util.ComparePassword(users.Password, payload.Password)
+	comparePassword := util.ComparePassword(users.Password, input.Password)
 
 	if comparePassword != nil {
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"
