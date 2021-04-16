@@ -4,7 +4,7 @@ import (
 	"time"
 
 	model "github.com/restuwahyu13/gin-rest-api/models"
-	"github.com/restuwahyu13/gin-rest-api/utils"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type Service interface {
@@ -24,7 +24,7 @@ func (s *service) RegisterService(input *InputRegister) (*model.EntityUsers, str
 	users := model.EntityUsers{
 		Fullname:  input.Fullname,
 		Email:     input.Email,
-		Password:  string(utils.HashPassword(input.Password)),
+		Password:  string(util.HashPassword(input.Password)),
 		CreatedAt: time.Now(),
 	}
 

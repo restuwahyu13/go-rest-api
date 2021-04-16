@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
-	"github.com/restuwahyu13/gin-rest-api/utils"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,14 +30,14 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 	_, errRegister := h.service.RegisterService(&input)
 
 	if errRegister == "REGISTER_CONFLICT_409" {
-		utils.APIResponse(ctx, "Email already exist", http.StatusConflict, http.MethodPost, nil)
+		util.APIResponse(ctx, "Email already exist", http.StatusConflict, http.MethodPost, nil)
 		return
 	}
 
 	if errRegister == "REGISTER_FAILED_403" {
-		utils.APIResponse(ctx, "Register new account failed", http.StatusForbidden, http.MethodPost, nil)
+		util.APIResponse(ctx, "Register new account failed", http.StatusForbidden, http.MethodPost, nil)
 		return
 	}
 
-	utils.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, nil)
+	util.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, nil)
 }

@@ -2,7 +2,7 @@ package login
 
 import (
 	model "github.com/restuwahyu13/gin-rest-api/models"
-	"github.com/restuwahyu13/gin-rest-api/utils"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"gorm.io/gorm"
 )
 
@@ -39,7 +39,7 @@ func (r *repository) LoginRepository(payload *model.EntityUsers) (*model.EntityU
 		return &users, <-errorCode
 	}
 
-	comparePassword := utils.ComparePassword(users.Password, payload.Password)
+	comparePassword := util.ComparePassword(users.Password, payload.Password)
 
 	if comparePassword != nil {
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"

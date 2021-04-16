@@ -1,10 +1,10 @@
-package middlewares
+package middleware
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/utils"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type UnathorizatedError struct {
@@ -17,8 +17,8 @@ type UnathorizatedError struct {
 func Auth() gin.HandlerFunc {
 
 	return gin.HandlerFunc(func(ctx *gin.Context) {
-		SecretPublicKey := utils.GodotEnv("JWT_SECRET")
-		token, err := utils.Verify(ctx, SecretPublicKey)
+		SecretPublicKey := util.GodotEnv("JWT_SECRET")
+		token, err := util.Verify(ctx, SecretPublicKey)
 
 		errorResponse := UnathorizatedError{
 			Status:  "Unathorizated",
@@ -29,6 +29,7 @@ func Auth() gin.HandlerFunc {
 
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, errorResponse)
+			return
 		} else {
 			// global value result
 			ctx.Set("user", token.Claims)

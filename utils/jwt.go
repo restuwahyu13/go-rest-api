@@ -1,4 +1,4 @@
-package utils
+package util
 
 import (
 	"strings"
@@ -41,7 +41,7 @@ func Verify(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, error) {
 
 	if err != nil {
 		logrus.Error(err.Error())
-		return token, err
+		return nil, err
 	}
 
 	return token, nil
