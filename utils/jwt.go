@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,19 +31,18 @@ func Sign(UserId uint, Email, SecrePublicKey string, ExpiredAt time.Duration) (s
 	return accessToken, nil
 }
 
-// func Verify(ctx *gin.Context) (*jwt.Token, error) {
-// 	accessToken := ctx.GetHeader("Authorization")
+func Verify(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, error) {
+	tokenHeader := ctx.GetHeader("Authorization")
+	accessToken := strings.SplitAfter(tokenHeader, "Bearer")[1]
 
-// 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-// 		return accessToken, nil
-// 	})
+	token, err := jwt.Parse(strings.Trim(accessToken, " "), func(token *jwt.Token) (interface{}, error) {
+		return []byte(SecrePublicKey), nil
+	})
 
-// 	if err != nil {
-// 		defer fmt.Sprintf("verified accessToken failed %v", accessToken)
-// 		logrus.Fatal(err.Error())
-// 		return token, err
-// 	}
+	if err != nil {
+		logrus.Error(err.Error())
+		return token, err
+	}
 
-// 	defer fmt.Sprintf("verified accessToken success %v", accessToken)
-// 	return token, err
-// }
+	return token, nil
+}
