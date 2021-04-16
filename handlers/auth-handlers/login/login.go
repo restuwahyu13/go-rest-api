@@ -27,7 +27,7 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	_, errLogin := h.service.LoginService(&input)
+	resultLogin, errLogin := h.service.LoginService(&input)
 
 	if errLogin == "LOGIN_NOT_FOUND_404" {
 		utils.APIResponse(ctx, "User account is not registered", http.StatusNotFound, http.MethodPost, nil)
@@ -44,5 +44,13 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	utils.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, nil)
+	secretKey := utils.GodotEnv("JWT_SECRET")
+	accessToken, err := utils.Sign(resultLogin.ID, resultLogin.Email, secretKey, 5)
+
+	if err != nil {
+		utils.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
+		return
+	}
+
+	utils.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, accessToken)
 }
