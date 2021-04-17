@@ -5,24 +5,17 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// type Request struct {
-// 	Template string
-// }
-
-// func NewRequest(Template string) *Request {
-// 	return &Request{
-// 		Template: Template,
-// 	}
-// }
-
-func SendGridMail(name, email, subjectMail, token string) {
+func SendGridMail(name, email, subject, fileName, token string) {
 
 	from := mail.NewEmail("admin", "admin@unindra.com")
 	to := mail.NewEmail(name, email)
-	subject := subjectMail
-	template := "xxxx"
+	subjectMail := subject
+	template := ParseHtml(fileName, map[string]string{
+		"to":    email,
+		"token": token,
+	})
 
-	message := mail.NewSingleEmail(from, subject, to, "", template)
+	message := mail.NewSingleEmail(from, subjectMail, to, "", template)
 	client := sendgrid.NewSendClient(GodotEnv("SG_API_KEY"))
 	client.Send(message)
 }

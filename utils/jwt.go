@@ -9,16 +9,19 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Sign(UserId uint, Email, SecrePublicKey string, ExpiredAt time.Duration) (string, error) {
+func Sign(Data map[string]interface{}, SecrePublicKey string, ExpiredAt time.Duration) (string, error) {
 
 	expiredAt := time.Now().Add(time.Minute * ExpiredAt).Unix()
+
 	jwtSecretKey := SecrePublicKey
 
 	claims := jwt.MapClaims{}
-	claims["id"] = UserId
-	claims["email"] = Email
 	claims["expiredAt"] = expiredAt
 	claims["authorization"] = true
+
+	for i, v := range Data {
+		claims[i] = v
+	}
 
 	to := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	accessToken, err := to.SignedString([]byte(jwtSecretKey))
