@@ -3,7 +3,6 @@ package util
 import (
 	"bytes"
 	"fmt"
-	"path"
 	"text/template"
 
 	"github.com/sirupsen/logrus"
@@ -15,7 +14,7 @@ type BodyRequest struct {
 }
 
 func ParseHtml(fileName string, data map[string]string) string {
-	html, errParse := template.ParseFiles(path.Dir("../templates/") + fileName)
+	html, errParse := template.ParseFiles("templates/" + fileName + ".html")
 
 	if errParse != nil {
 		defer fmt.Println("parser file html failed")

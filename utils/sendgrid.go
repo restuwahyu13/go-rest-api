@@ -1,12 +1,12 @@
 package util
 
 import (
+	"github.com/sendgrid/rest"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendGridMail(name, email, subject, fileName, token string) {
-
+func SendGridMail(name, email, subject, fileName, token string) (*rest.Response, error) {
 	from := mail.NewEmail("admin", "admin@unindra.com")
 	to := mail.NewEmail(name, email)
 	subjectMail := subject
@@ -17,5 +17,5 @@ func SendGridMail(name, email, subject, fileName, token string) {
 
 	message := mail.NewSingleEmail(from, subjectMail, to, "", template)
 	client := sendgrid.NewSendClient(GodotEnv("SG_API_KEY"))
-	client.Send(message)
+	return client.Send(message)
 }
