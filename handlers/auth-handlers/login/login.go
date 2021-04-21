@@ -45,9 +45,10 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 	}
 
 	secretKey := util.GodotEnv("JWT_SECRET")
-	accessToken, err := util.Sign(map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}, secretKey, 5)
+	accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
+	accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
 
-	if err != nil {
+	if errToken != nil {
 		util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
 		return
 	}

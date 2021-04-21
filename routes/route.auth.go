@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
+	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
 	handlerLogin "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/login"
 	handlerRegister "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/register"
+	handlerResend "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/resend"
 	"gorm.io/gorm"
 )
 
@@ -22,11 +24,16 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	registerService := register.NewServiceRegister(registerRepository)
 	registerHandler := handlerRegister.NewHandlerRegister(registerService)
 
+	resendRepository := resend.NewRepositoryResend(db)
+	resendService := resend.NewServiceResend(resendRepository)
+	resendHandler := handlerResend.NewHandlerResend(resendService)
+
 	/**
 	@description All Auth Route
 	*/
 	groupRoute := route.Group("/api/v1")
 	groupRoute.POST("/register", registerHandler.RegisterHandler)
 	groupRoute.POST("/login", loginHandler.LoginHandler)
+	groupRoute.POST("/resend", resendHandler.ResendHandler)
 
 }

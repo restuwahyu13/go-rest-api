@@ -39,7 +39,7 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 		return
 	}
 
-	var accessTokenData = map[string]interface{}{"id": resultRegister.ID, "email": resultRegister.Email}
+	accessTokenData := map[string]interface{}{"id": resultRegister.ID, "email": resultRegister.Email}
 	accessToken, err := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
 
 	if err != nil {

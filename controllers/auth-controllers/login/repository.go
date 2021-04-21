@@ -20,14 +20,14 @@ func NewRepositoryLogin(db *gorm.DB) *repository {
 
 func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 	trx := r.db.Begin()
-	errorCode := make(chan string, 2)
+	errorCode := make(chan string, 1)
 
 	users := model.EntityUsers{
 		Email:    input.Email,
 		Password: input.Password,
 	}
 
-	checkUserAccount := trx.Where("email", input.Email).First(&users).Error
+	checkUserAccount := trx.Where("email = ?", input.Email).First(&users).Error
 
 	if checkUserAccount != nil {
 		errorCode <- "LOGIN_NOT_FOUND_404"

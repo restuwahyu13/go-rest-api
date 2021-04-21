@@ -1,6 +1,8 @@
 package register
 
 import (
+	"time"
+
 	model "github.com/restuwahyu13/gin-rest-api/models"
 	"gorm.io/gorm"
 )
@@ -20,16 +22,16 @@ func NewRepositoryRegister(db *gorm.DB) *repository {
 func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 
 	transaction := r.db.Begin()
-	errorCode := make(chan string, 2)
+	errorCode := make(chan string, 1)
 
 	users := model.EntityUsers{
 		Fullname:  input.Fullname,
 		Email:     input.Email,
 		Password:  input.Password,
-		CreatedAt: input.CreatedAt,
+		CreatedAt: time.Now().Local(),
 	}
 
-	checkUserAccount := transaction.Where("email", input.Email).First(&users).RowsAffected
+	checkUserAccount := transaction.Where("email = ?", input.Email).First(&users).RowsAffected
 
 	if checkUserAccount > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"
