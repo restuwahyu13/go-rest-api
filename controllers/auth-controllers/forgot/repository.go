@@ -25,7 +25,7 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 
 	users.Email = input.Email
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
 
 	if checkUserAccount < 1 {
 		errorCode <- "FORGOT_NOT_FOUD_404"

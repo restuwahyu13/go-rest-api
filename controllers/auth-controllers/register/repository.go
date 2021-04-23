@@ -30,7 +30,7 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	users.Password = input.Password
 	users.CreatedAt = time.Now().Local()
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
 
 	if checkUserAccount > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"

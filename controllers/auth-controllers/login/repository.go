@@ -27,7 +27,7 @@ func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUse
 	users.Email = input.Email
 	users.Password = input.Password
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).Error
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).Error
 
 	if checkUserAccount != nil {
 		errorCode <- "LOGIN_NOT_FOUND_404"

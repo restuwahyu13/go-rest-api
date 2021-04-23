@@ -27,7 +27,7 @@ func (r *repository) ActivationRepository(input *model.EntityUsers) (*model.Enti
 
 	users.Email = input.Email
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
 
 	if checkUserAccount < 1 {
 		errorCode <- "ACTIVATION_NOT_FOUND_404"
