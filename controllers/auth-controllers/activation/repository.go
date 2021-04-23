@@ -1,7 +1,6 @@
 package activation
 
 import (
-	"fmt"
 	"time"
 
 	model "github.com/restuwahyu13/gin-rest-api/models"
@@ -34,6 +33,7 @@ func (r *repository) ActivationRepository(input *model.EntityUsers) (*model.Enti
 	if checkUserAccount < 1 {
 		db.Rollback()
 		errorCode <- "ACTIVATION_NOT_FOUND_404"
+		return &users, <-errorCode
 	}
 
 	db.Select("Active").Where("activation = ?", input.Active).First(&users)
@@ -41,17 +41,19 @@ func (r *repository) ActivationRepository(input *model.EntityUsers) (*model.Enti
 	if users.Active {
 		db.Rollback()
 		errorCode <- "ACTIVATION_ACTIVE_400"
+		return &users, <-errorCode
 	}
 
-	data := model.EntityUsers{Active: input.Active, UpdatedAt: time.Now().Local()}
-	updateActivationAccount := db.Select("Email", "Active", "UpdatedAt").Where("email = ?", input.Email).Updates(&data)
-	updateActivationAccount.Commit()
-
-	fmt.Println(updateActivationAccount.Error)
+	data := model.EntityUsers{}
+	updateActivationAccount := db.Select("active", "updated_at").Where("email = ?", input.Email).Take(&data).UpdateColumns(map[string]interface{}{
+		"email":      input.Email,
+		"updated_at": time.Now().Local(),
+	})
 
 	if updateActivationAccount.Error != nil {
 		db.Rollback()
 		errorCode <- "ACTIVATION_ACCOUNT_FAILED_403"
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}

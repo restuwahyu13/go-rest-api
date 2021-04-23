@@ -32,11 +32,13 @@ func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUse
 	if checkUserAccount != nil {
 		db.Rollback()
 		errorCode <- "LOGIN_NOT_FOUND_404"
+		return &users, <-errorCode
 	}
 
 	if !users.Active {
 		db.Rollback()
 		errorCode <- "LOGIN_NOT_ACTIVE_403"
+		return &users, <-errorCode
 	}
 
 	comparePassword := util.ComparePassword(users.Password, input.Password)
@@ -44,6 +46,7 @@ func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUse
 	if comparePassword != nil {
 		db.Rollback()
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}

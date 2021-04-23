@@ -30,11 +30,13 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 	if checkUserAccount < 1 {
 		db.Rollback()
 		errorCode <- "FORGOT_NOT_FOUD_404"
+		return &users, <-errorCode
 	}
 
 	if !users.Active {
 		db.Rollback()
 		errorCode <- "FORGOT_NOT_ACTIVE_400"
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}

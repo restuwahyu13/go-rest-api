@@ -36,6 +36,7 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	if checkUserAccount > 0 {
 		db.Rollback()
 		errorCode <- "REGISTER_CONFLICT_409"
+		return &users, <-errorCode
 	}
 
 	addNewUser := db.Create(&users).Error
@@ -44,6 +45,7 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	if addNewUser != nil {
 		db.Rollback()
 		errorCode <- "REGISTER_FAILED_403"
+		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}
