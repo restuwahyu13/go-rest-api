@@ -21,37 +21,32 @@ func NewRepositoryActivation(db *gorm.DB) *repository {
 
 func (r *repository) ActivationRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 
-	db := r.db.Begin()
+	var users model.EntityUsers
+	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
 
-	users := model.EntityUsers{
-		Email: input.Email,
-	}
+	users.Email = input.Email
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
 
 	if checkUserAccount < 1 {
-		db.Rollback()
 		errorCode <- "ACTIVATION_NOT_FOUND_404"
 		return &users, <-errorCode
 	}
 
-	db.Select("Active").Where("activation = ?", input.Active).First(&users)
+	db.Select("Active").Where("activation = ?", input.Active).Take(&users)
 
 	if users.Active {
-		db.Rollback()
 		errorCode <- "ACTIVATION_ACTIVE_400"
 		return &users, <-errorCode
 	}
 
-	data := model.EntityUsers{}
-	updateActivationAccount := db.Select("active", "updated_at").Where("email = ?", input.Email).Take(&data).UpdateColumns(map[string]interface{}{
-		"email":      input.Email,
-		"updated_at": time.Now().Local(),
-	})
+	users.Active = input.Active
+	users.UpdatedAt = time.Now().Local()
 
-	if updateActivationAccount.Error != nil {
-		db.Rollback()
+	updateActivation := db.Select("active", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users)
+
+	if updateActivation.Error != nil {
 		errorCode <- "ACTIVATION_ACCOUNT_FAILED_403"
 		return &users, <-errorCode
 	} else {

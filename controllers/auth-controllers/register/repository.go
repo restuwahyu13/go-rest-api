@@ -21,20 +21,18 @@ func NewRepositoryRegister(db *gorm.DB) *repository {
 
 func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
 
-	db := r.db.Begin()
+	var users model.EntityUsers
+	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
 
-	users := model.EntityUsers{
-		Fullname:  input.Fullname,
-		Email:     input.Email,
-		Password:  input.Password,
-		CreatedAt: time.Now().Local(),
-	}
+	users.Fullname = input.Fullname
+	users.Email = input.Email
+	users.Password = input.Password
+	users.CreatedAt = time.Now().Local()
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
 
 	if checkUserAccount > 0 {
-		db.Rollback()
 		errorCode <- "REGISTER_CONFLICT_409"
 		return &users, <-errorCode
 	}
@@ -43,7 +41,6 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	db.Commit()
 
 	if addNewUser != nil {
-		db.Rollback()
 		errorCode <- "REGISTER_FAILED_403"
 		return &users, <-errorCode
 	} else {

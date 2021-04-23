@@ -18,23 +18,21 @@ func NewRepositoryForgot(db *gorm.DB) *repository {
 }
 
 func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
-	db := r.db.Begin()
+
+	var users model.EntityUsers
+	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
 
-	users := model.EntityUsers{
-		Email: input.Email,
-	}
+	users.Email = input.Email
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).RowsAffected
 
 	if checkUserAccount < 1 {
-		db.Rollback()
 		errorCode <- "FORGOT_NOT_FOUD_404"
 		return &users, <-errorCode
 	}
 
 	if !users.Active {
-		db.Rollback()
 		errorCode <- "FORGOT_NOT_ACTIVE_400"
 		return &users, <-errorCode
 	} else {

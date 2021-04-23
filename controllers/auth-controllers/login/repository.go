@@ -19,24 +19,22 @@ func NewRepositoryLogin(db *gorm.DB) *repository {
 }
 
 func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
-	db := r.db.Begin()
+
+	var users model.EntityUsers
+	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
 
-	users := model.EntityUsers{
-		Email:    input.Email,
-		Password: input.Password,
-	}
+	users.Email = input.Email
+	users.Password = input.Password
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).Error
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Take(&users).Error
 
 	if checkUserAccount != nil {
-		db.Rollback()
 		errorCode <- "LOGIN_NOT_FOUND_404"
 		return &users, <-errorCode
 	}
 
 	if !users.Active {
-		db.Rollback()
 		errorCode <- "LOGIN_NOT_ACTIVE_403"
 		return &users, <-errorCode
 	}
@@ -44,7 +42,6 @@ func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUse
 	comparePassword := util.ComparePassword(users.Password, input.Password)
 
 	if comparePassword != nil {
-		db.Rollback()
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"
 		return &users, <-errorCode
 	} else {

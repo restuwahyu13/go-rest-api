@@ -59,5 +59,5 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 		return
 	}
 
-	util.APIResponse(ctx, "Activation account success", http.StatusBadRequest, http.MethodPost, nil)
+	util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
 }
