@@ -53,5 +53,5 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, accessToken)
+	util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": accessToken})
 }

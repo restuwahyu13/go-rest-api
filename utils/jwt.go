@@ -34,11 +34,25 @@ func Sign(Data map[string]interface{}, SecrePublicKey string, ExpiredAt time.Dur
 	return accessToken, nil
 }
 
-func Verify(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, error) {
+func VerifyTokenHeader(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, error) {
 	tokenHeader := ctx.GetHeader("Authorization")
 	accessToken := strings.SplitAfter(tokenHeader, "Bearer")[1]
 
 	token, err := jwt.Parse(strings.Trim(accessToken, " "), func(token *jwt.Token) (interface{}, error) {
+		return []byte(SecrePublicKey), nil
+	})
+
+	if err != nil {
+		logrus.Error(err.Error())
+		return nil, err
+	}
+
+	return token, nil
+}
+
+func VerifyToken(accessToken, SecrePublicKey string) (*jwt.Token, error) {
+
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte(SecrePublicKey), nil
 	})
 

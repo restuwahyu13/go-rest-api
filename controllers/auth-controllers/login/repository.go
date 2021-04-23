@@ -19,7 +19,7 @@ func NewRepositoryLogin(db *gorm.DB) *repository {
 }
 
 func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
-	trx := r.db.Begin()
+	db := r.db.Begin()
 	errorCode := make(chan string, 1)
 
 	users := model.EntityUsers{
@@ -27,23 +27,23 @@ func (r *repository) LoginRepository(input *model.EntityUsers) (*model.EntityUse
 		Password: input.Password,
 	}
 
-	checkUserAccount := trx.Where("email = ?", input.Email).First(&users).Error
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).Error
 
 	if checkUserAccount != nil {
+		db.Rollback()
 		errorCode <- "LOGIN_NOT_FOUND_404"
-		return &users, <-errorCode
 	}
 
 	if !users.Active {
+		db.Rollback()
 		errorCode <- "LOGIN_NOT_ACTIVE_403"
-		return &users, <-errorCode
 	}
 
 	comparePassword := util.ComparePassword(users.Password, input.Password)
 
 	if comparePassword != nil {
+		db.Rollback()
 		errorCode <- "LOGIN_WRONG_PASSWORD_403"
-		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}

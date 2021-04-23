@@ -18,20 +18,22 @@ func NewRepositoryResend(db *gorm.DB) *repository {
 }
 
 func (r *repository) ResendRepository(input *model.EntityUsers) (*model.EntityUsers, string) {
-	trx := r.db.Begin()
+	db := r.db.Begin()
 	errorCode := make(chan string, 1)
 
 	users := model.EntityUsers{
 		Email: input.Email,
 	}
 
-	checkUserAccount := trx.Where("email = ?", input.Email).First(&users).RowsAffected
+	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).RowsAffected
 
 	if checkUserAccount < 1 {
+		db.Rollback()
 		errorCode <- "RESEND_NOT_FOUD_404"
 	}
 
 	if !users.Active {
+		db.Rollback()
 		errorCode <- "RESEND_NOT_ACTIVE_400"
 	} else {
 		errorCode <- "nil"

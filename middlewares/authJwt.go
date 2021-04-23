@@ -18,7 +18,7 @@ func Auth() gin.HandlerFunc {
 
 	return gin.HandlerFunc(func(ctx *gin.Context) {
 		SecretPublicKey := util.GodotEnv("JWT_SECRET")
-		token, err := util.Verify(ctx, SecretPublicKey)
+		token, err := util.VerifyTokenHeader(ctx, SecretPublicKey)
 
 		errorResponse := UnathorizatedError{
 			Status:  "Unathorizated",

@@ -54,5 +54,5 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 		return
 	}
 
-	util.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, nil)
+	util.APIResponse(ctx, "Register new account successfully", http.StatusOK, http.MethodPost, accessToken)
 }
