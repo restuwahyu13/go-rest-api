@@ -1,4 +1,4 @@
-package register
+package registerAuth
 
 type InputRegister struct {
 	Fullname string `json:"fullname" binding:"required"`

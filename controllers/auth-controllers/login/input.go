@@ -1,4 +1,4 @@
-package login
+package loginAuth
 
 type InputLogin struct {
 	Email    string `json:"email" binding:"required"`

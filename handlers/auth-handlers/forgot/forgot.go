@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/forgot"
+	forgotAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/forgot"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type handler struct {
-	service forgot.Service
+	service forgotAuth.Service
 }
 
-func NewHandlerForgot(service forgot.Service) *handler {
+func NewHandlerForgot(service forgotAuth.Service) *handler {
 	return &handler{service: service}
 }
 
 func (h *handler) ForgotHandler(ctx *gin.Context) {
-	var input forgot.InputForgot
+	var input forgotAuth.InputForgot
 
 	ctx.ShouldBindJSON(&input)
 

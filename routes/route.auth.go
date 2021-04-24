@@ -2,12 +2,12 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/forgot"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
+	activationAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
+	forgotAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/forgot"
+	loginAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
+	registerAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
+	resendAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
+	resetAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
 	handlerActivation "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/activation"
 	handlerForgot "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/forgot"
 	handlerLogin "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/login"
@@ -22,28 +22,28 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	/**
 	@description All Handler Auth
 	*/
-	LoginRepository := login.NewRepositoryLogin(db)
-	loginService := login.NewServiceLogin(LoginRepository)
+	LoginRepository := loginAuth.NewRepositoryLogin(db)
+	loginService := loginAuth.NewServiceLogin(LoginRepository)
 	loginHandler := handlerLogin.NewHandlerLogin(loginService)
 
-	registerRepository := register.NewRepositoryRegister(db)
-	registerService := register.NewServiceRegister(registerRepository)
+	registerRepository := registerAuth.NewRepositoryRegister(db)
+	registerService := registerAuth.NewServiceRegister(registerRepository)
 	registerHandler := handlerRegister.NewHandlerRegister(registerService)
 
-	activationRepository := activation.NewRepositoryActivation(db)
-	activationService := activation.NewServiceActivation(activationRepository)
+	activationRepository := activationAuth.NewRepositoryActivation(db)
+	activationService := activationAuth.NewServiceActivation(activationRepository)
 	activationHandler := handlerActivation.NewHandlerActivation(activationService)
 
-	resendRepository := resend.NewRepositoryResend(db)
-	resendService := resend.NewServiceResend(resendRepository)
+	resendRepository := resendAuth.NewRepositoryResend(db)
+	resendService := resendAuth.NewServiceResend(resendRepository)
 	resendHandler := handlerResend.NewHandlerResend(resendService)
 
-	forgotRepository := forgot.NewRepositoryForgot(db)
-	forgotService := forgot.NewServiceForgot(forgotRepository)
+	forgotRepository := forgotAuth.NewRepositoryForgot(db)
+	forgotService := forgotAuth.NewServiceForgot(forgotRepository)
 	forgotHandler := handlerForgot.NewHandlerForgot(forgotService)
 
-	resetRepository := reset.NewRepositoryReset(db)
-	resetService := reset.NewServiceReset(resetRepository)
+	resetRepository := resetAuth.NewRepositoryReset(db)
+	resetService := resetAuth.NewServiceReset(resetRepository)
 	resetHandler := handlerReset.NewHandlerReset(resetService)
 
 	/**

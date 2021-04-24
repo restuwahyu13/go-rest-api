@@ -1,4 +1,4 @@
-package activation
+package activationAuth
 
 type InputActivation struct {
 	Email  string `json:"email"`

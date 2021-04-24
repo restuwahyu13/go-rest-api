@@ -1,4 +1,4 @@
-package activation
+package activationAuth
 
 import model "github.com/restuwahyu13/gin-rest-api/models"
 

@@ -1,4 +1,4 @@
-package reset
+package resetAuth
 
 import model "github.com/restuwahyu13/gin-rest-api/models"
 

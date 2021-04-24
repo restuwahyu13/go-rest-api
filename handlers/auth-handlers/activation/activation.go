@@ -4,21 +4,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
+	activationAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type handler struct {
-	service activation.Service
+	service activationAuth.Service
 }
 
-func NewHandlerActivation(service activation.Service) *handler {
+func NewHandlerActivation(service activationAuth.Service) *handler {
 	return &handler{service: service}
 }
 
 func (h *handler) ActivationHandler(ctx *gin.Context) {
 
-	var input activation.InputActivation
+	var input activationAuth.InputActivation
 	token := ctx.Param("token")
 	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 

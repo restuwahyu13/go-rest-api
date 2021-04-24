@@ -1,4 +1,4 @@
-package reset
+package resetAuth
 
 type InputReset struct {
 	Email     string `json:"email"`

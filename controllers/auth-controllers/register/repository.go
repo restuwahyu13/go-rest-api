@@ -1,4 +1,4 @@
-package register
+package registerAuth
 
 import (
 	"time"

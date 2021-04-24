@@ -1,4 +1,4 @@
-package activation
+package activationAuth
 
 import (
 	"time"

@@ -4,21 +4,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
+	loginAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
-	service login.Service
+	service loginAuth.Service
 }
 
-func NewHandlerLogin(service login.Service) *handler {
+func NewHandlerLogin(service loginAuth.Service) *handler {
 	return &handler{service: service}
 }
 
 func (h *handler) LoginHandler(ctx *gin.Context) {
-	var input login.InputLogin
+	var input loginAuth.InputLogin
 
 	err := ctx.ShouldBindJSON(&input)
 

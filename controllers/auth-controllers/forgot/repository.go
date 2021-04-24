@@ -1,4 +1,4 @@
-package forgot
+package forgotAuth
 
 import (
 	model "github.com/restuwahyu13/gin-rest-api/models"

@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
+	resetAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type handler struct {
-	service reset.Service
+	service resetAuth.Service
 }
 
-func NewHandlerReset(service reset.Service) *handler {
+func NewHandlerReset(service resetAuth.Service) *handler {
 	return &handler{service: service}
 }
 
 func (h *handler) ResetHandler(ctx *gin.Context) {
-	var input reset.InputReset
+	var input resetAuth.InputReset
 	ctx.ShouldBindJSON(&input)
 
 	token := ctx.Param("token")

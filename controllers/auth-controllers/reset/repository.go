@@ -1,4 +1,4 @@
-package reset
+package resetAuth
 
 import (
 	"time"
@@ -41,8 +41,7 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 		return &users, <-errorCode
 	}
 
-	hashPassword := util.HashPassword(input.Password)
-	users.Password = string(hashPassword)
+	users.Password = string(util.HashPassword(input.Password))
 	users.UpdatedAt = time.Now().Local()
 
 	updateNewPassword := db.Select("password", "update_at").Where("email = ?", input.Email).Take(&users).Updates(users).Error

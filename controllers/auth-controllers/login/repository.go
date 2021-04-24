@@ -1,4 +1,4 @@
-package login
+package loginAuth
 
 import (
 	model "github.com/restuwahyu13/gin-rest-api/models"

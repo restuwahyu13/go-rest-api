@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
+	resendAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
 
 type handler struct {
-	service resend.Service
+	service resendAuth.Service
 }
 
-func NewHandlerResend(service resend.Service) *handler {
+func NewHandlerResend(service resendAuth.Service) *handler {
 	return &handler{service: service}
 }
 
 func (h *handler) ResendHandler(ctx *gin.Context) {
-	var input resend.InputResend
+	var input resendAuth.InputResend
 
 	ctx.ShouldBindJSON(&input)
 
