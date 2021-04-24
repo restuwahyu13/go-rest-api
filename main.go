@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	helmet "github.com/danielkov/gin-helmet"
 	"github.com/gin-contrib/cors"
@@ -44,13 +43,5 @@ func main() {
 	/**
 	@description Setup Server
 	*/
-	port := make(chan string, 1)
-
-	if os.Getenv("GO_ENV") != "production" {
-		port <- util.GodotEnv("GO_PORT")
-	} else {
-		port <- os.Getenv("GO_PORT")
-	}
-
-	log.Fatal(router.Run(":" + <-port))
+	log.Fatal(router.Run(":" + util.GodotEnv("GO_PORT")))
 }
