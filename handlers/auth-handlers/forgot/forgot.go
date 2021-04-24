@@ -41,7 +41,7 @@ func (h *handler) ForgotHandler(ctx *gin.Context) {
 
 		default:
 			accessTokenData := map[string]interface{}{"id": forgotResult.ID, "email": forgotResult.Email}
-			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
+			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 60)
 
 			if errToken != nil {
 				defer logrus.Error(err.Error())

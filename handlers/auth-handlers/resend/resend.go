@@ -38,7 +38,7 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 
 		default:
 			accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
-			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
+			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 60)
 
 			if errToken != nil {
 				defer logrus.Error(errToken.Error())
