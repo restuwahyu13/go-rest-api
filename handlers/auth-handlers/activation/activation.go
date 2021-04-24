@@ -1,17 +1,12 @@
 package handlerActivation
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 )
-
-type Handler interface {
-	ActivationHandler(ctx *gin.Context)
-}
 
 type handler struct {
 	service activation.Service
@@ -23,6 +18,7 @@ func NewHandlerActivation(service activation.Service) *handler {
 
 func (h *handler) ActivationHandler(ctx *gin.Context) {
 
+	var input activation.InputActivation
 	token := ctx.Param("token")
 	resultToken, errToken := util.VerifyToken(token, util.GodotEnv("JWT_SECRET"))
 
@@ -31,16 +27,9 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 		return
 	}
 
-	var data map[string]interface{}
-	stringify, _ := json.Marshal(&resultToken)
-	json.Unmarshal([]byte(stringify), &data)
-
-	email := data["Claims"].(map[string]interface{})["email"].(string)
-
-	input := activation.InputActivation{
-		Email:  email,
-		Active: true,
-	}
+	result := util.DecodeToken(resultToken)
+	input.Email = result.Claims.Email
+	input.Active = true
 
 	_, errActivation := h.service.ActivationService(&input)
 

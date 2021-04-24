@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -8,6 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
+
+type MetaToken struct {
+	ID            int
+	Email         string
+	ExpiredAt     time.Time
+	Authorization bool
+}
+
+type AccessToken struct {
+	Claims MetaToken
+}
 
 func Sign(Data map[string]interface{}, SecrePublicKey string, ExpiredAt time.Duration) (string, error) {
 
@@ -62,4 +74,12 @@ func VerifyToken(accessToken, SecrePublicKey string) (*jwt.Token, error) {
 	}
 
 	return token, nil
+}
+
+func DecodeToken(accessToken *jwt.Token) AccessToken {
+	var token AccessToken
+	stringify, _ := json.Marshal(&accessToken)
+	json.Unmarshal([]byte(stringify), &token)
+
+	return token
 }

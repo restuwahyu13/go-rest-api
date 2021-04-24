@@ -24,7 +24,7 @@ func main() {
 	*/
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DEL", "HEAD", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
 		AllowCredentials: true,
 	}))
 	router.Use(helmet.Default())

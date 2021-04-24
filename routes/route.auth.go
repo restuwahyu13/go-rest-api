@@ -6,10 +6,12 @@ import (
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
 	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
+	"github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
 	handlerActivation "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/activation"
 	handlerLogin "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/login"
 	handlerRegister "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/register"
 	handlerResend "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/resend"
+	handlerReset "github.com/restuwahyu13/gin-rest-api/handlers/auth-handlers/reset"
 	"gorm.io/gorm"
 )
 
@@ -26,13 +28,17 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	registerService := register.NewServiceRegister(registerRepository)
 	registerHandler := handlerRegister.NewHandlerRegister(registerService)
 
+	activationRepository := activation.NewRepositoryActivation(db)
+	activationService := activation.NewServiceActivation(activationRepository)
+	activationHandler := handlerActivation.NewHandlerActivation(activationService)
+
 	resendRepository := resend.NewRepositoryResend(db)
 	resendService := resend.NewServiceResend(resendRepository)
 	resendHandler := handlerResend.NewHandlerResend(resendService)
 
-	activationRepository := activation.NewRepositoryActivation(db)
-	activationService := activation.NewServiceActivation(activationRepository)
-	activationHandler := handlerActivation.NewHandlerActivation(activationService)
+	resetRepository := reset.NewRepositoryReset(db)
+	resetService := reset.NewServiceReset(resetRepository)
+	resetHandler := handlerReset.NewHandlerReset(resetService)
 
 	/**
 	@description All Auth Route
@@ -41,6 +47,7 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	groupRoute.POST("/register", registerHandler.RegisterHandler)
 	groupRoute.POST("/login", loginHandler.LoginHandler)
 	groupRoute.POST("/activation/:token", activationHandler.ActivationHandler)
-	groupRoute.POST("/resend", resendHandler.ResendHandler)
+	groupRoute.POST("/resend-token", resendHandler.ResendHandler)
+	groupRoute.POST("/reset-password/:token", resetHandler.ResetHandler)
 
 }
