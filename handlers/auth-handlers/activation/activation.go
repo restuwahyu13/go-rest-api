@@ -33,20 +33,21 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	_, errActivation := h.service.ActivationService(&input)
 
-	if errActivation == "ACTIVATION_NOT_FOUND_404" {
+	switch errActivation {
+
+	case "ACTIVATION_NOT_FOUND_404":
 		util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
 		return
-	}
 
-	if errActivation == "ACTIVATION_ACTIVE_400" {
+	case "ACTIVATION_ACTIVE_400":
 		util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
 		return
-	}
 
-	if errActivation == "ACTIVATION_ACCOUNT_FAILED_403" {
+	case "ACTIVATION_ACCOUNT_FAILED_403":
 		util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
 		return
-	}
 
-	util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
+	default:
+		util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
+	}
 }

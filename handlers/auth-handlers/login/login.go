@@ -29,29 +29,30 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 
 	resultLogin, errLogin := h.service.LoginService(&input)
 
-	if errLogin == "LOGIN_NOT_FOUND_404" {
+	switch errLogin {
+
+	case "LOGIN_NOT_FOUND_404":
 		util.APIResponse(ctx, "User account is not registered", http.StatusNotFound, http.MethodPost, nil)
 		return
-	}
 
-	if errLogin == "LOGIN_NOT_ACTIVE_403" {
+	case "LOGIN_NOT_ACTIVE_403":
 		util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
 		return
-	}
 
-	if errLogin == "LOGIN_WRONG_PASSWORD_403" {
+	case "LOGIN_WRONG_PASSWORD_403":
 		util.APIResponse(ctx, "Username or password is wrong", http.StatusForbidden, http.MethodPost, nil)
 		return
+
+	default:
+		secretKey := util.GodotEnv("JWT_SECRET")
+		accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
+		accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
+
+		if errToken != nil {
+			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
+			return
+		}
+
+		util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": accessToken})
 	}
-
-	secretKey := util.GodotEnv("JWT_SECRET")
-	accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
-	accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
-
-	if errToken != nil {
-		util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
-		return
-	}
-
-	util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": accessToken})
 }

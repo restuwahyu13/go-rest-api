@@ -23,31 +23,33 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 
 	resendResult, errResend := h.service.ResendService(&input)
 
-	if errResend == "RESEND_NOT_FOUD_404" {
+	switch errResend {
+
+	case "RESEND_NOT_FOUD_404":
 		util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodGet, nil)
 		return
-	}
 
-	if errResend == "RESEND_NOT_ACTIVE_400" {
+	case "RESEND_NOT_ACTIVE_400":
 		util.APIResponse(ctx, "User account is not active", http.StatusNotFound, http.MethodGet, nil)
 		return
+
+	default:
+		secretKey := util.GodotEnv("JWT_SECRET")
+		accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
+		accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
+
+		if errToken != nil {
+			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
+			return
+		}
+
+		_, errorEmail := util.SendGridMail(resendResult.Fullname, resendResult.Email, "Resend New Activation", "template_resend", accessToken)
+
+		if errorEmail != nil {
+			util.APIResponse(ctx, "Sending email resend activation failed", http.StatusBadRequest, http.MethodPost, nil)
+			return
+		}
+
+		util.APIResponse(ctx, "Resend new activation token successfully", http.StatusNotFound, http.MethodPost, nil)
 	}
-
-	secretKey := util.GodotEnv("JWT_SECRET")
-	accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
-	accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
-
-	if errToken != nil {
-		util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
-		return
-	}
-
-	_, errorEmail := util.SendGridMail(resendResult.Fullname, resendResult.Email, "Resend New Activation", "template_resend", accessToken)
-
-	if errorEmail != nil {
-		util.APIResponse(ctx, "Sending email resend activation failed", http.StatusBadRequest, http.MethodPost, nil)
-		return
-	}
-
-	util.APIResponse(ctx, "Resend new activation token successfully", http.StatusNotFound, http.MethodPost, nil)
 }

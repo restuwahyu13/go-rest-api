@@ -39,20 +39,21 @@ func (h *handler) ResetHandler(ctx *gin.Context) {
 
 	_, errReset := h.service.ResetService(&input)
 
-	if errReset == "RESET_NOT_FOUND_404" {
+	switch errReset {
+
+	case "RESET_NOT_FOUND_404":
 		util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
 		return
-	}
 
-	if errReset == "ACCOUNT_NOT_ACTIVE_404" {
+	case "ACCOUNT_NOT_ACTIVE_404":
 		util.APIResponse(ctx, "User account is not active", http.StatusBadRequest, http.MethodPost, nil)
 		return
-	}
 
-	if errReset == "RESET_PASSWORD_FAILED_403" {
+	case "RESET_PASSWORD_FAILED_403":
 		util.APIResponse(ctx, "Change new password failed", http.StatusForbidden, http.MethodPost, nil)
 		return
-	}
 
-	util.APIResponse(ctx, "Change new password successfully", http.StatusOK, http.MethodPost, nil)
+	default:
+		util.APIResponse(ctx, "Change new password successfully", http.StatusOK, http.MethodPost, nil)
+	}
 }
