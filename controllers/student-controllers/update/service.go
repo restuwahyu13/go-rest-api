@@ -1,4 +1,4 @@
-package createStudent
+package updateStudent
 
 import (
 	"time"
@@ -7,28 +7,29 @@ import (
 )
 
 type Service interface {
-	CreateStudentService(input *InputCreateStudent) (*model.EntityStudent, string)
+	UpdateStudentService(input *InputUpdateStudent) (*model.EntityStudent, string)
 }
 
 type service struct {
 	repository Repository
 }
 
-func NewServiceCreate(repository Repository) *service {
+func NewServiceUpdate(repository Repository) *service {
 	return &service{repository: repository}
 }
 
-func (s *service) CreateStudentService(input *InputCreateStudent) (*model.EntityStudent, string) {
+func (s *service) UpdateStudentService(input *InputUpdateStudent) (*model.EntityStudent, string) {
 
 	var students model.EntityStudent
 
+	students.ID = input.ID
 	students.Name = input.Name
 	students.Npm = input.Npm
 	students.Fak = input.Fak
 	students.Bid = input.Bid
-	students.CreatedAt = time.Now().Local()
+	students.UpdatedAt = time.Now().Local()
 
-	resultCreateStudent, errCreateStudent := s.repository.CreateStudentRepository(&students)
+	resultUpdateStudent, errUpdateStudent := s.repository.UpdateStudentRepository(&students)
 
-	return resultCreateStudent, errCreateStudent
+	return resultUpdateStudent, errUpdateStudent
 }

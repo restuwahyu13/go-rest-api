@@ -1,5 +1,5 @@
 package deleteStudent
 
 type InputDeleteStudent struct {
-	ID uint64 `json:"id" binding:"required"`
+	ID uint64 `binding:"required"`
 }

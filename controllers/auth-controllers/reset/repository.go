@@ -44,7 +44,7 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 	users.Password = util.HashPassword(input.Password)
 	users.UpdatedAt = time.Now().Local()
 
-	updateNewPassword := db.Debug().Select("password", "update_at").Where("email = ?", input.Email).Take(&users).Updates(users)
+	updateNewPassword := db.Debug().Select("password", "update_at").Where("email = ?", input.Email).Updates(users)
 
 	if updateNewPassword.Error != nil {
 		errorCode <- "RESET_PASSWORD_FAILED_403"
