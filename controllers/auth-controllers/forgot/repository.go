@@ -39,7 +39,7 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 		return &users, <-errorCode
 	}
 
-	changePassword := db.Debug().Select("password", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users)
+	changePassword := db.Debug().Select("password", "updated_at").Where("email = ?", input.Email).Updates(users)
 
 	if changePassword.Error != nil {
 		errorCode <- "FORGOT_PASSWORD_FAILED_403"

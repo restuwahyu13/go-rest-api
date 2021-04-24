@@ -44,7 +44,7 @@ func (r *repository) ActivationRepository(input *model.EntityUsers) (*model.Enti
 	users.Active = input.Active
 	users.UpdatedAt = time.Now().Local()
 
-	updateActivation := db.Debug().Select("active", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users)
+	updateActivation := db.Debug().Select("active", "updated_at").Where("email = ?", input.Email).Updates(users)
 
 	if updateActivation.Error != nil {
 		errorCode <- "ACTIVATION_ACCOUNT_FAILED_403"
