@@ -16,5 +16,6 @@ func APIResponse(ctx *gin.Context, Message string, StatusCode int, Method string
 		Message:    Message,
 		Data:       Data,
 	}
+
 	ctx.JSON(StatusCode, jsonResponse)
 }

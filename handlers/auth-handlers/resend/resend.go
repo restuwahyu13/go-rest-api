@@ -34,9 +34,8 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 		return
 
 	default:
-		secretKey := util.GodotEnv("JWT_SECRET")
 		accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
-		accessToken, errToken := util.Sign(accessTokenData, secretKey, 5)
+		accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
 
 		if errToken != nil {
 			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)

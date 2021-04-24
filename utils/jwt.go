@@ -21,11 +21,11 @@ type AccessToken struct {
 	Claims MetaToken
 }
 
-func Sign(Data map[string]interface{}, SecrePublicKey string, ExpiredAt time.Duration) (string, error) {
+func Sign(Data map[string]interface{}, SecrePublicKeyEnvName string, ExpiredAt time.Duration) (string, error) {
 
 	expiredAt := time.Now().Add(time.Minute * ExpiredAt).Unix()
 
-	jwtSecretKey := SecrePublicKey
+	jwtSecretKey := GodotEnv(SecrePublicKeyEnvName)
 
 	claims := jwt.MapClaims{}
 	claims["expiredAt"] = expiredAt
@@ -46,12 +46,13 @@ func Sign(Data map[string]interface{}, SecrePublicKey string, ExpiredAt time.Dur
 	return accessToken, nil
 }
 
-func VerifyTokenHeader(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, error) {
+func VerifyTokenHeader(ctx *gin.Context, SecrePublicKeyEnvName string) (*jwt.Token, error) {
 	tokenHeader := ctx.GetHeader("Authorization")
 	accessToken := strings.SplitAfter(tokenHeader, "Bearer")[1]
+	jwtSecretKey := GodotEnv(SecrePublicKeyEnvName)
 
 	token, err := jwt.Parse(strings.Trim(accessToken, " "), func(token *jwt.Token) (interface{}, error) {
-		return []byte(SecrePublicKey), nil
+		return []byte(jwtSecretKey), nil
 	})
 
 	if err != nil {
@@ -62,10 +63,11 @@ func VerifyTokenHeader(ctx *gin.Context, SecrePublicKey string) (*jwt.Token, err
 	return token, nil
 }
 
-func VerifyToken(accessToken, SecrePublicKey string) (*jwt.Token, error) {
+func VerifyToken(accessToken, SecrePublicKeyEnvName string) (*jwt.Token, error) {
+	jwtSecretKey := GodotEnv(SecrePublicKeyEnvName)
 
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SecrePublicKey), nil
+		return []byte(jwtSecretKey), nil
 	})
 
 	if err != nil {

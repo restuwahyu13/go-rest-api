@@ -20,7 +20,7 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	var input activation.InputActivation
 	token := ctx.Param("token")
-	resultToken, errToken := util.VerifyToken(token, util.GodotEnv("JWT_SECRET"))
+	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
 	if errToken != nil {
 		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)

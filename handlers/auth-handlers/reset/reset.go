@@ -21,7 +21,7 @@ func (h *handler) ResetHandler(ctx *gin.Context) {
 	ctx.ShouldBindJSON(&input)
 
 	token := ctx.Param("token")
-	resultToken, errToken := util.VerifyToken(token, util.GodotEnv("JWT_SECRET"))
+	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
 	if errToken != nil {
 		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)

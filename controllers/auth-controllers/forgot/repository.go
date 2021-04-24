@@ -2,6 +2,7 @@ package forgot
 
 import (
 	model "github.com/restuwahyu13/gin-rest-api/models"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"gorm.io/gorm"
 )
 
@@ -24,6 +25,7 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 	errorCode := make(chan string, 1)
 
 	users.Email = input.Email
+	users.Password = string(util.HashPassword(util.RandStringBytes(20)))
 
 	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
 
@@ -34,6 +36,13 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 
 	if !users.Active {
 		errorCode <- "FORGOT_NOT_ACTIVE_400"
+		return &users, <-errorCode
+	}
+
+	changePassword := db.Select("password", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users).Error
+
+	if changePassword != nil {
+		errorCode <- "FORGOT_PASSWORD_FAILED_403"
 		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"
