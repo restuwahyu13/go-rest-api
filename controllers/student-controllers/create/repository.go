@@ -23,9 +23,9 @@ func (r *repository) CreateStudentRepository(input *model.EntityStudent) (*model
 	db := r.db.Model(&students)
 	errorCode := make(chan string, 1)
 
-	checkStudentExist := db.Select("npm").Where("npm ? =", input.Npm).First(&students).RowsAffected
+	checkStudentExist := db.Select("*").Where("npm = ?", input.Npm).Find(&students)
 
-	if checkStudentExist > 0 {
+	if checkStudentExist.RowsAffected > 0 {
 		errorCode <- "CREATE_STUDENT_CONFLICT_409"
 		return &students, <-errorCode
 	}

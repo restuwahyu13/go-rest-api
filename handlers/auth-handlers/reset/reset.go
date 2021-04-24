@@ -22,37 +22,37 @@ func (h *handler) ResetHandler(ctx *gin.Context) {
 
 	if err != nil {
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
-	}
+	} else {
+		token := ctx.Param("token")
+		resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
-	token := ctx.Param("token")
-	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
+		if errToken != nil {
+			util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
+		}
 
-	if errToken != nil {
-		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
-	}
+		if input.Cpassword != input.Password {
+			util.APIResponse(ctx, "Confirm Password is not match with Password", http.StatusBadRequest, http.MethodPost, nil)
+		}
 
-	if input.Cpassword != input.Password {
-		util.APIResponse(ctx, "Confirm Password is not match with Password", http.StatusBadRequest, http.MethodPost, nil)
-	}
+		result := util.DecodeToken(resultToken)
+		input.Email = result.Claims.Email
+		input.Active = true
 
-	result := util.DecodeToken(resultToken)
-	input.Email = result.Claims.Email
-	input.Active = true
+		_, errReset := h.service.ResetService(&input)
 
-	_, errReset := h.service.ResetService(&input)
+		switch errReset {
 
-	switch errReset {
+		case "RESET_NOT_FOUND_404":
+			util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
 
-	case "RESET_NOT_FOUND_404":
-		util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
+		case "ACCOUNT_NOT_ACTIVE_404":
+			util.APIResponse(ctx, "User account is not active", http.StatusBadRequest, http.MethodPost, nil)
 
-	case "ACCOUNT_NOT_ACTIVE_404":
-		util.APIResponse(ctx, "User account is not active", http.StatusBadRequest, http.MethodPost, nil)
+		case "RESET_PASSWORD_FAILED_403":
+			util.APIResponse(ctx, "Change new password failed", http.StatusForbidden, http.MethodPost, nil)
 
-	case "RESET_PASSWORD_FAILED_403":
-		util.APIResponse(ctx, "Change new password failed", http.StatusForbidden, http.MethodPost, nil)
-
-	default:
-		util.APIResponse(ctx, "Change new password successfully", http.StatusOK, http.MethodPost, nil)
+		default:
+			util.APIResponse(ctx, "Change new password successfully", http.StatusOK, http.MethodPost, nil)
+		}
 	}
 }

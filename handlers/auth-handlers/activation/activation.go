@@ -24,26 +24,26 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	if errToken != nil {
 		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
-	}
+	} else {
+		result := util.DecodeToken(resultToken)
+		input.Email = result.Claims.Email
+		input.Active = true
 
-	result := util.DecodeToken(resultToken)
-	input.Email = result.Claims.Email
-	input.Active = true
+		_, errActivation := h.service.ActivationService(&input)
 
-	_, errActivation := h.service.ActivationService(&input)
+		switch errActivation {
 
-	switch errActivation {
+		case "ACTIVATION_NOT_FOUND_404":
+			util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
 
-	case "ACTIVATION_NOT_FOUND_404":
-		util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
+		case "ACTIVATION_ACTIVE_400":
+			util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
 
-	case "ACTIVATION_ACTIVE_400":
-		util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
+		case "ACTIVATION_ACCOUNT_FAILED_403":
+			util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
 
-	case "ACTIVATION_ACCOUNT_FAILED_403":
-		util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
-
-	default:
-		util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
+		default:
+			util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
+		}
 	}
 }
