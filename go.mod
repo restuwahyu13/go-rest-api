@@ -6,7 +6,10 @@ require (
 	github.com/0xAX/notificator v0.0.0-20191016112426-3962a5ea8da1 // indirect
 	github.com/codegangsta/envy v0.0.0-20141216192214-4b78388c8ce4 // indirect
 	github.com/codegangsta/gin v0.0.0-20171026143024-cafe2ce98974 // indirect
+	github.com/danielkov/gin-helmet v0.0.0-20171108135313-1387e224435e // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/gin-contrib/cors v1.3.1 // indirect
+	github.com/gin-contrib/gzip v0.0.3 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.5.0 // indirect
@@ -24,9 +27,9 @@ require (
 	github.com/sendgrid/sendgrid-go v3.8.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/ugorji/go v1.2.5 // indirect
-	golang.org/x/crypto v0.0.0-20210415154028-4f45737414dc
+	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/net v0.0.0-20210414194228-064579744ee0 // indirect
-	golang.org/x/sys v0.0.0-20210415045647-66c3f260301c // indirect
+	golang.org/x/sys v0.0.0-20210423185535-09eb48e85fd7 // indirect
 	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
