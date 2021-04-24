@@ -17,5 +17,10 @@ func APIResponse(ctx *gin.Context, Message string, StatusCode int, Method string
 		Data:       Data,
 	}
 
-	ctx.JSON(StatusCode, jsonResponse)
+	if StatusCode >= 400 {
+		ctx.JSON(StatusCode, jsonResponse)
+		defer ctx.AbortWithStatus(StatusCode)
+	} else {
+		ctx.JSON(StatusCode, jsonResponse)
+	}
 }

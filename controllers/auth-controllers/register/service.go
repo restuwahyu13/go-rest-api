@@ -24,7 +24,7 @@ func (s *service) RegisterService(input *InputRegister) (*model.EntityUsers, str
 	users := model.EntityUsers{
 		Fullname:  input.Fullname,
 		Email:     input.Email,
-		Password:  string(util.HashPassword(input.Password)),
+		Password:  util.HashPassword(input.Password),
 		CreatedAt: time.Now(),
 	}
 

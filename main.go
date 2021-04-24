@@ -33,6 +33,7 @@ func main() {
 		@description Init All Route
 	*/
 	route.InitAuthRoutes(db, router)
+	route.InitStudentRoutes(db, router)
 	/*
 		@description Setup Server
 	*/

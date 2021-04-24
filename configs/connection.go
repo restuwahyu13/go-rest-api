@@ -23,6 +23,7 @@ func Connection() *gorm.DB {
 
 	err = db.AutoMigrate(
 		&model.EntityUsers{},
+		&model.EntityStudent{},
 	)
 
 	if err != nil {

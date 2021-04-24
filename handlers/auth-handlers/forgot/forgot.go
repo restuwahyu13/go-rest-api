@@ -19,7 +19,11 @@ func NewHandlerForgot(service forgotAuth.Service) *handler {
 func (h *handler) ForgotHandler(ctx *gin.Context) {
 	var input forgotAuth.InputForgot
 
-	ctx.ShouldBindJSON(&input)
+	err := ctx.ShouldBindJSON(&input)
+
+	if err != nil {
+		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
+	}
 
 	forgotResult, errForgot := h.service.ForgotService(&input)
 
@@ -27,15 +31,12 @@ func (h *handler) ForgotHandler(ctx *gin.Context) {
 
 	case "FORGOT_NOT_FOUD_404":
 		util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
-		return
 
 	case "FORGOT_NOT_ACTIVE_400":
 		util.APIResponse(ctx, "User account is not active", http.StatusNotFound, http.MethodPost, nil)
-		return
 
 	case "FORGOT_PASSWORD_FAILED_403":
 		util.APIResponse(ctx, "Forgot password failed", http.StatusForbidden, http.MethodPost, nil)
-		return
 
 	default:
 		accessTokenData := map[string]interface{}{"id": forgotResult.ID, "email": forgotResult.Email}
@@ -43,14 +44,12 @@ func (h *handler) ForgotHandler(ctx *gin.Context) {
 
 		if errToken != nil {
 			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
-			return
 		}
 
 		_, errorEmail := util.SendGridMail(forgotResult.Fullname, forgotResult.Email, "Reset Password", "template_reset", accessToken)
 
 		if errorEmail != nil {
 			util.APIResponse(ctx, "Sending email reset password failed", http.StatusBadRequest, http.MethodPost, nil)
-			return
 		}
 
 		util.APIResponse(ctx, "Forgot password successfully", http.StatusOK, http.MethodPost, nil)

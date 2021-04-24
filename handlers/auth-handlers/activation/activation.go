@@ -24,7 +24,6 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	if errToken != nil {
 		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
-		return
 	}
 
 	result := util.DecodeToken(resultToken)
@@ -37,15 +36,12 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	case "ACTIVATION_NOT_FOUND_404":
 		util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
-		return
 
 	case "ACTIVATION_ACTIVE_400":
 		util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
-		return
 
 	case "ACTIVATION_ACCOUNT_FAILED_403":
 		util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
-		return
 
 	default:
 		util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)

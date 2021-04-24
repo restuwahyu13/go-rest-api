@@ -41,7 +41,7 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 		return &users, <-errorCode
 	}
 
-	users.Password = string(util.HashPassword(input.Password))
+	users.Password = util.HashPassword(input.Password)
 	users.UpdatedAt = time.Now().Local()
 
 	updateNewPassword := db.Select("password", "update_at").Where("email = ?", input.Email).Take(&users).Updates(users).Error
