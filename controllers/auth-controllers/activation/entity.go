@@ -1,7 +1,7 @@
 package activationAuth
 
 type InputActivation struct {
-	Email  string `json:"email"`
-	Active bool   `json:"active"`
-	Token  string `json:"token"`
+	Email  string `json:"email" binding:"required"`
+	Active bool   `json:"active" binding:"required"`
+	Token  string `json:"token" binding:"required"`
 }
