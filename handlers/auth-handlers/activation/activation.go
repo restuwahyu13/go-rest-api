@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	activationAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/activation"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
@@ -23,6 +24,7 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
 	if errToken != nil {
+		defer logrus.Error(errToken.Error())
 		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
 		result := util.DecodeToken(resultToken)

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	resetAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/reset"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
@@ -21,12 +22,14 @@ func (h *handler) ResetHandler(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&input)
 
 	if err != nil {
+		defer logrus.Error(err.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
 		token := ctx.Param("token")
 		resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
 		if errToken != nil {
+			defer logrus.Error(errToken.Error())
 			util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
 		}
 

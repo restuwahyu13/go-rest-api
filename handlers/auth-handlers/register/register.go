@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	registerAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/register"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
@@ -22,6 +23,7 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&input)
 
 	if err != nil {
+		defer logrus.Error(err.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
 		resultRegister, errRegister := h.service.RegisterService(&input)
@@ -36,15 +38,17 @@ func (h *handler) RegisterHandler(ctx *gin.Context) {
 
 		default:
 			accessTokenData := map[string]interface{}{"id": resultRegister.ID, "email": resultRegister.Email}
-			accessToken, err := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
+			accessToken, errToken := util.Sign(accessTokenData, util.GodotEnv("JWT_SECRET"), 60)
 
-			if err != nil {
+			if errToken != nil {
+				defer logrus.Error(errToken.Error())
 				util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
 			}
 
 			_, errSendMail := util.SendGridMail(resultRegister.Fullname, resultRegister.Email, "Activation Account", "template_register", accessToken)
 
 			if errSendMail != nil {
+				defer logrus.Error(errSendMail.Error())
 				util.APIResponse(ctx, "Sending email activation failed", http.StatusBadRequest, http.MethodPost, nil)
 			}
 

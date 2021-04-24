@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	loginAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/login"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type handler struct {
@@ -22,6 +23,7 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 	err := ctx.ShouldBindJSON(&input)
 
 	if err != nil {
+		defer logrus.Error(err.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
 		resultLogin, errLogin := h.service.LoginService(&input)
@@ -42,6 +44,7 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
 
 			if errToken != nil {
+				defer logrus.Error(errToken.Error())
 				util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
 			}
 
