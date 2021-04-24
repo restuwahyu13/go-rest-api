@@ -5,7 +5,7 @@ services:
   ### ===================
   app:
     container_name: app
-    restart: unless_stopped
+    restart: always
     build: .
     healthcheck:
       interval: 120ms
@@ -25,8 +25,6 @@ services:
         rmdir "${PWD}/healthcheck" &&
         clear
       timeout: 30ms
-    environment:
-      - GO_ENV=production
     env_file:
       - .env
     ports:
@@ -42,7 +40,7 @@ services:
   ### ===================
   db:
     image: postgres:12-alpine
-    restart: unless_stopped
+    restart: always
     healthcheck:
       interval: 120ms
       retries: 5
