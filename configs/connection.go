@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	model "github.com/restuwahyu13/gin-rest-api/models"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"github.com/sirupsen/logrus"
@@ -11,10 +13,10 @@ import (
 func Connection() *gorm.DB {
 	databaseURI := make(chan string, 1)
 
-	if util.GodotEnv("GO_ENV") != "production" {
+	if os.Getenv("GO_ENV") != "production" {
 		databaseURI <- util.GodotEnv("DATABASE_URI_DEV")
 	} else {
-		databaseURI <- util.GodotEnv("DATABASE_URI_PROD")
+		databaseURI <- os.Getenv("DATABASE_URI_PROD")
 	}
 
 	db, err := gorm.Open(postgres.Open(<-databaseURI), &gorm.Config{})
@@ -24,7 +26,7 @@ func Connection() *gorm.DB {
 		logrus.Fatal(err.Error())
 	}
 
-	if util.GodotEnv("GO_ENV") != "production" {
+	if os.Getenv("GO_ENV") != "production" {
 		logrus.Info("Connection to Database Successfully")
 	}
 

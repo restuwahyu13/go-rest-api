@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	helmet "github.com/danielkov/gin-helmet"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -11,16 +14,20 @@ import (
 )
 
 func main() {
-	/*
-		@description Setup Database Connection
+	/**
+	@description Setup Database Connection
 	*/
 	db := config.Connection()
-	/*
-		@description Setup Router
+	/**
+	@description Setup Router
 	*/
 	router := gin.Default()
-	/*
-		@description Setup Middleware
+	/**
+	@description Setup Mode Application
+	*/
+	gin.SetMode(gin.ReleaseMode)
+	/**
+	@description Setup Middleware
 	*/
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
@@ -29,13 +36,21 @@ func main() {
 	}))
 	router.Use(helmet.Default())
 	router.Use(gzip.Gzip(gzip.BestCompression))
-	/*
-		@description Init All Route
+	/**
+	@description Init All Route
 	*/
 	route.InitAuthRoutes(db, router)
 	route.InitStudentRoutes(db, router)
-	/*
-		@description Setup Server
+	/**
+	@description Setup Server
 	*/
-	router.Run(":" + util.GodotEnv("PORT"))
+	port := make(chan string, 1)
+
+	if os.Getenv("GO_ENV") != "production" {
+		port <- util.GodotEnv("GO_PORT")
+	} else {
+		port <- os.Getenv("GO_PORT")
+	}
+
+	log.Fatal(router.Run(":" + <-port))
 }
