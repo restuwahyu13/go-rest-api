@@ -29,9 +29,9 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 	users.Password = input.Password
 	users.Active = input.Active
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).First(&users).RowsAffected
+	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
-	if checkUserAccount < 1 {
+	if checkUserAccount.RowsAffected < 1 {
 		errorCode <- "RESET_NOT_FOUND_404"
 		return &users, <-errorCode
 	}
@@ -44,9 +44,9 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 	users.Password = util.HashPassword(input.Password)
 	users.UpdatedAt = time.Now().Local()
 
-	updateNewPassword := db.Select("password", "update_at").Where("email = ?", input.Email).Take(&users).Updates(users).Error
+	updateNewPassword := db.Debug().Select("password", "update_at").Where("email = ?", input.Email).Take(&users).Updates(users)
 
-	if updateNewPassword != nil {
+	if updateNewPassword.Error != nil {
 		errorCode <- "RESET_PASSWORD_FAILED_403"
 		return &users, <-errorCode
 	} else {

@@ -25,11 +25,11 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 	errorCode := make(chan string, 1)
 
 	users.Email = input.Email
-	users.Password = string(util.HashPassword(util.RandStringBytes(20)))
+	users.Password = util.HashPassword(util.RandStringBytes(20))
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
+	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
-	if checkUserAccount < 1 {
+	if checkUserAccount.RowsAffected < 1 {
 		errorCode <- "FORGOT_NOT_FOUD_404"
 		return &users, <-errorCode
 	}
@@ -39,9 +39,9 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 		return &users, <-errorCode
 	}
 
-	changePassword := db.Select("password", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users).Error
+	changePassword := db.Debug().Select("password", "updated_at").Where("email = ?", input.Email).Take(&users).Updates(users)
 
-	if changePassword != nil {
+	if changePassword.Error != nil {
 		errorCode <- "FORGOT_PASSWORD_FAILED_403"
 		return &users, <-errorCode
 	} else {

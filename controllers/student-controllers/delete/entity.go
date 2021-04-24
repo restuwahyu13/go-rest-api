@@ -1,5 +1,8 @@
-package deleteStudent
+package createStudent
 
-type InputDeleteStudent struct {
-	ID int `json:"id"`
+type InputCreateStudent struct {
+	Name string `json:"name" binding:"required"`
+	Npm  int    `json:"npm" binding:"required"`
+	Fak  string `json:"fak" binding:"required"`
+	Bid  string `json:"bid" binding:"required"`
 }

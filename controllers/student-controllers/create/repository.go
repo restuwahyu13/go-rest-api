@@ -23,7 +23,7 @@ func (r *repository) CreateStudentRepository(input *model.EntityStudent) (*model
 	db := r.db.Model(&students)
 	errorCode := make(chan string, 1)
 
-	checkStudentExist := db.Select("*").Where("npm = ?", input.Npm).Find(&students)
+	checkStudentExist := db.Debug().Select("*").Where("npm = ?", input.Npm).Find(&students)
 
 	if checkStudentExist.RowsAffected > 0 {
 		errorCode <- "CREATE_STUDENT_CONFLICT_409"
@@ -36,10 +36,10 @@ func (r *repository) CreateStudentRepository(input *model.EntityStudent) (*model
 	students.Bid = input.Bid
 	students.CreatedAt = input.CreatedAt
 
-	addNewStudent := db.Create(&students).Error
+	addNewStudent := db.Debug().Create(&students)
 	db.Commit()
 
-	if addNewStudent != nil {
+	if addNewStudent.Error != nil {
 		errorCode <- "CREATE_STUDENT_FAILED_403"
 		return &students, <-errorCode
 	} else {

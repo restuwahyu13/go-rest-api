@@ -1,6 +1,8 @@
 package util
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type Responses struct {
 	StatusCode int
@@ -10,6 +12,7 @@ type Responses struct {
 }
 
 func APIResponse(ctx *gin.Context, Message string, StatusCode int, Method string, Data interface{}) {
+
 	jsonResponse := Responses{
 		StatusCode: StatusCode,
 		Method:     Method,

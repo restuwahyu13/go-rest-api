@@ -1,5 +1,5 @@
 package resultStudent
 
 type InputResultStudent struct {
-	ID int `json:"id"`
+	ID uint64 `json:"id" binding:"required"`
 }

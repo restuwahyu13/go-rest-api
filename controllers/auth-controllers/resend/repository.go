@@ -25,9 +25,9 @@ func (r *repository) ResendRepository(input *model.EntityUsers) (*model.EntityUs
 
 	users.Email = input.Email
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
+	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
-	if checkUserAccount < 1 {
+	if checkUserAccount.RowsAffected < 1 {
 		errorCode <- "RESEND_NOT_FOUD_404"
 		return &users, <-errorCode
 	}

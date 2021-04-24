@@ -30,17 +30,17 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	users.Password = input.Password
 	users.CreatedAt = time.Now().Local()
 
-	checkUserAccount := db.Select("*").Where("email = ?", input.Email).Find(&users).RowsAffected
+	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
-	if checkUserAccount > 0 {
+	if checkUserAccount.RowsAffected > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"
 		return &users, <-errorCode
 	}
 
-	addNewUser := db.Create(&users).Error
+	addNewUser := db.Debug().Create(&users)
 	db.Commit()
 
-	if addNewUser != nil {
+	if addNewUser.Error != nil {
 		errorCode <- "REGISTER_FAILED_403"
 		return &users, <-errorCode
 	} else {
