@@ -30,7 +30,7 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 	switch errResultStudent {
 
 	case "RESULT_STUDENT_NOT_FOUND_404":
-		util.APIResponse(ctx, "Student data is not exist", http.StatusConflict, http.MethodPost, nil)
+		util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusConflict, http.MethodPost, nil)
 
 	default:
 		util.APIResponse(ctx, "Student data already exist", http.StatusOK, http.MethodPost, resultStudent)

@@ -1,34 +1,28 @@
-package createStudent
+package deleteStudent
 
 import (
-	"time"
-
 	model "github.com/restuwahyu13/gin-rest-api/models"
 )
 
 type Service interface {
-	CreateStudentService(input *InputCreateStudent) (*model.EntityStudent, string)
+	DeleteStudentService(input *InputDeleteStudent) (*model.EntityStudent, string)
 }
 
 type service struct {
 	repository Repository
 }
 
-func NewServiceCreate(repository Repository) *service {
+func NewServiceDelete(repository Repository) *service {
 	return &service{repository: repository}
 }
 
-func (s *service) CreateStudentService(input *InputCreateStudent) (*model.EntityStudent, string) {
+func (s *service) DeleteStudentService(input *InputDeleteStudent) (*model.EntityStudent, string) {
 
 	var students model.EntityStudent
 
-	students.Name = input.Name
-	students.Npm = input.Npm
-	students.Fak = input.Fak
-	students.Bid = input.Bid
-	students.CreatedAt = time.Now().Local()
+	students.ID = input.ID
 
-	resultCreateStudent, errCreateStudent := s.repository.CreateStudentRepository(&students)
+	resultCreateStudent, errCreateStudent := s.repository.DeleteStudentRepository(&students)
 
 	return resultCreateStudent, errCreateStudent
 }

@@ -3,9 +3,11 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	createStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/create"
+	deleteStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/delete"
 	resultStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/result"
 	resultsStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/results"
 	handlerCreateStudent "github.com/restuwahyu13/gin-rest-api/handlers/student-handlers/create"
+	handlerDeleteStudent "github.com/restuwahyu13/gin-rest-api/handlers/student-handlers/delete"
 	handlerResultStudent "github.com/restuwahyu13/gin-rest-api/handlers/student-handlers/result"
 	handlerResultsStudent "github.com/restuwahyu13/gin-rest-api/handlers/student-handlers/results"
 	middleware "github.com/restuwahyu13/gin-rest-api/middlewares"
@@ -29,6 +31,10 @@ func InitStudentRoutes(db *gorm.DB, route *gin.Engine) {
 	resultStudentService := resultStudent.NewServiceResult(resultStudentRepository)
 	resultStudentHandler := handlerResultStudent.NewHandlerResultStudent(resultStudentService)
 
+	deleteStudentRepository := deleteStudent.NewRepositoryDelete(db)
+	deleteStudentService := deleteStudent.NewServiceDelete(deleteStudentRepository)
+	deleteStudentHandler := handlerDeleteStudent.NewHandlerDeleteStudent(deleteStudentService)
+
 	/**
 	@description All Student Route
 	*/
@@ -36,6 +42,6 @@ func InitStudentRoutes(db *gorm.DB, route *gin.Engine) {
 	groupRoute.POST("/student", createStudentHandler.CreateStudentHandler)
 	groupRoute.GET("/student", resultsStudentHandler.ResultsStudentHandler)
 	groupRoute.GET("/student/:id", resultStudentHandler.ResultStudentHandler)
-	groupRoute.DELETE("/student", createStudentHandler.CreateStudentHandler)
+	groupRoute.DELETE("/student/:id", deleteStudentHandler.DeleteStudentHandler)
 	groupRoute.PUT("/student", createStudentHandler.CreateStudentHandler)
 }
