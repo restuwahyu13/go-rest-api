@@ -29,8 +29,6 @@ services:
       - .env
     ports:
       - 4000:4000
-    volumes:
-      - .:/usr/src/app
     networks:
       - restapi_network
     depends_on:
