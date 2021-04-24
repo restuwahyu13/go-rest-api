@@ -1,0 +1,83 @@
+version: '3.8'
+services:
+  ### ===================
+  ### APP SERVICE
+  ### ===================
+  app:
+    container_name: app
+    restart: unless_stopped
+    build: .
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        sleep 3 &&
+        rm "${PWD}/healthcheck.txt"
+        cd .. &&
+        sleep 3 &&
+        rmdir "${PWD}/healthcheck" &&
+        clear
+      timeout: 30ms
+    environment:
+      - GO_ENV=production
+    env_file:
+      - .env
+    ports:
+      - 4000:4000
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - restapi_network
+    depends_on:
+      - db
+  ### ===================
+  ### DB SERVICE
+  ### ===================
+  db:
+    image: postgres:12-alpine
+    restart: unless_stopped
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        sleep 3 &&
+        rm "${PWD}/healthcheck.txt"
+        cd .. &&
+        sleep 3 &&
+        rmdir "${PWD}/healthcheck" &&
+        clear
+      timeout: 30ms
+    environment:
+      POSTGRES_DB: campus
+      POSTGRES_USER: restuwahyu13
+      POSTGRES_PASSWORD: restuwahyu13
+    ports:
+      - 5430:5432
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - restapi_network
+  ### ========================
+  ### VOLUMES PERSISTENT DATA
+  ### ========================
+volumes:
+  pg-data:
+  ### ===================================
+  ### NETWORKS GROUP FOR ONE SAME SERVICE
+  ### ===================================
+networks:
+  restapi_network:

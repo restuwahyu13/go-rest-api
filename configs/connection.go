@@ -9,15 +9,22 @@ import (
 )
 
 func Connection() *gorm.DB {
-	databaseURI := util.GodotEnv("DATABASE_URI")
-	db, err := gorm.Open(postgres.Open(databaseURI), &gorm.Config{})
+	databaseURI := make(chan string, 1)
+
+	if util.GodotEnv("GO_ENV") != "production" {
+		databaseURI <- util.GodotEnv("DATABASE_URI_DEV")
+	} else {
+		databaseURI <- util.GodotEnv("DATABASE_URI_PROD")
+	}
+
+	db, err := gorm.Open(postgres.Open(<-databaseURI), &gorm.Config{})
 
 	if err != nil {
 		defer logrus.Info("Connection to Database Failed")
 		logrus.Fatal(err.Error())
 	}
 
-	if util.GodotEnv("NODE_ENV") != "production" {
+	if util.GodotEnv("GO_ENV") != "production" {
 		logrus.Info("Connection to Database Successfully")
 	}
 
