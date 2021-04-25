@@ -26,6 +26,6 @@ func (h *handler) ResultsStudentHandler(ctx *gin.Context) {
 		util.APIResponse(ctx, "Students data is not exists", http.StatusConflict, http.MethodPost, nil)
 
 	default:
-		util.APIResponse(ctx, "Students data already exists", http.StatusOK, http.MethodPost, resultsStudent)
+		util.APIResponse(ctx, "Results Students data successfully", http.StatusOK, http.MethodPost, resultsStudent)
 	}
 }

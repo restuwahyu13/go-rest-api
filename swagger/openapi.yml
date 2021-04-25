@@ -328,3 +328,287 @@ paths:
             Change new password failed
         '404':
           description: User account is not exist
+  #################################
+  ## STUDENT ENDPOINT TERITORY
+  #################################
+  /student:
+    #################################
+    ## CREATE STUDENT ENDPOINT
+    #################################
+    post:
+      tags:
+        - Student Endpoint
+      summary: Create Student
+      description: create new student account
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: restu wahyu saputra
+                npm:
+                  type: integer
+                  format: number
+                  example: 201543502291
+                fak:
+                  type: string
+                  example: mipa
+                bid:
+                  type: string
+                  example: tehnik informatika
+              required:
+                - name
+                - npm
+                - fak
+                - bid
+      responses:
+        '200':
+          description: Create new student account successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: Parsing json data failed
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: |
+            Authorization is required for this endpoint,
+            Create new student account failed
+        '409':
+          description: CREATE_STUDENT_CONFLICT_409
+    #################################
+    ## RESULTS STUDENT ENDPOINT
+    #################################
+    get:
+      tags:
+        - Student Endpoint
+      summary: Results All Student
+      description: results all student account exists
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Results Students data successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                required:
+                  - statusCode
+                  - method
+                  - message
+                  - data
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: Authorization is required for this endpoint
+        '404':
+          description: Students data is not exists
+  ###################################
+  ## STUDENT ENDPOINT TERITORY BY ID
+  ###################################
+  /student/{id}:
+    #################################
+    ## RESULT STUDENT ENDPOINT
+    #################################
+    get:
+      tags:
+        - Student Endpoint
+      summary: Result Student
+      description: result specific student by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: b78bf89d-7748-42c0-b971-3bb7d28d167e
+      responses:
+        '200':
+          description: Result Student data successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                required:
+                  - statusCode
+                  - method
+                  - message
+                  - data
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: Authorization is required for this endpoint
+        '404':
+          description: Student data is not exist or deleted
+    #################################
+    ## DELETE STUDENT ENDPOINT
+    #################################
+    delete:
+      tags:
+        - Student Endpoint
+      summary: Delete Student
+      description: delete specific student by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: b78bf89d-7748-42c0-b971-3bb7d28d167e
+      responses:
+        '200':
+          description: Delete student data successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: |
+            Authorization is required for this endpoint,
+            Delete student data failed
+        '404':
+          description: Student data is not exist or deleted
+    #################################
+    ## UPDATE STUDENT ENDPOINT
+    #################################
+    put:
+      tags:
+        - Student Endpoint
+      summary: Update Student
+      description: update specific student by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: b78bf89d-7748-42c0-b971-3bb7d28d167e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: restu wahyu saputra
+                npm:
+                  type: integer
+                  format: number
+                  example: 201543502291
+                fak:
+                  type: string
+                  example: mipa
+                bid:
+                  type: string
+                  example: tehnik informatika
+              required:
+                - name
+                - npm
+                - fak
+                - bid
+      responses:
+        '200':
+          description: Update student data sucessfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: Parsing json data failed
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: |
+            Authorization is required for this endpoint,
+            Update student data failed
+        '404':
+          description: Student data is not exist or deleted
+  #################################
+  #################################
+  ## COMPONENTS AUTH TERITORY
+  #################################
+  #################################
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
