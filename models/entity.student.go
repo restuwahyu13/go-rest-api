@@ -19,4 +19,9 @@ type EntityStudent struct {
 
 func (entity *EntityStudent) BeforeCreate(db *gorm.DB) {
 	entity.ID = uuid.New().String()
+	entity.CreatedAt = time.Now().Local()
+}
+
+func (entity *EntityStudent) BeforeUpdate(db *gorm.DB) {
+	entity.UpdatedAt = time.Now().Local()
 }

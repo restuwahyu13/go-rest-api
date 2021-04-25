@@ -1,8 +1,6 @@
 package createStudent
 
 import (
-	"time"
-
 	model "github.com/restuwahyu13/gin-rest-api/models"
 )
 
@@ -20,13 +18,12 @@ func NewServiceCreate(repository Repository) *service {
 
 func (s *service) CreateStudentService(input *InputCreateStudent) (*model.EntityStudent, string) {
 
-	var students model.EntityStudent
-
-	students.Name = input.Name
-	students.Npm = input.Npm
-	students.Fak = input.Fak
-	students.Bid = input.Bid
-	students.CreatedAt = time.Now().Local()
+	students := model.EntityStudent{
+		Name: input.Name,
+		Npm:  input.Npm,
+		Fak:  input.Fak,
+		Bid:  input.Bid,
+	}
 
 	resultCreateStudent, errCreateStudent := s.repository.CreateStudentRepository(&students)
 

@@ -1,8 +1,6 @@
 package updateStudent
 
 import (
-	"time"
-
 	model "github.com/restuwahyu13/gin-rest-api/models"
 )
 
@@ -20,14 +18,13 @@ func NewServiceUpdate(repository Repository) *service {
 
 func (s *service) UpdateStudentService(input *InputUpdateStudent) (*model.EntityStudent, string) {
 
-	var students model.EntityStudent
-
-	students.ID = input.ID
-	students.Name = input.Name
-	students.Npm = input.Npm
-	students.Fak = input.Fak
-	students.Bid = input.Bid
-	students.UpdatedAt = time.Now().Local()
+	students := model.EntityStudent{
+		ID:   input.ID,
+		Name: input.Name,
+		Npm:  input.Npm,
+		Fak:  input.Fak,
+		Bid:  input.Bid,
+	}
 
 	resultUpdateStudent, errUpdateStudent := s.repository.UpdateStudentRepository(&students)
 

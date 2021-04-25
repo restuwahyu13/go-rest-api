@@ -1,8 +1,6 @@
 package registerAuth
 
 import (
-	"time"
-
 	model "github.com/restuwahyu13/gin-rest-api/models"
 	"gorm.io/gorm"
 )
@@ -28,7 +26,6 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	users.Fullname = input.Fullname
 	users.Email = input.Email
 	users.Password = input.Password
-	users.CreatedAt = time.Now().Local()
 
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 

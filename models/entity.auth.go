@@ -19,4 +19,9 @@ type EntityUsers struct {
 
 func (entity *EntityUsers) BeforeCreate(db *gorm.DB) {
 	entity.ID = uuid.New().String()
+	entity.CreatedAt = time.Now().Local()
+}
+
+func (entity *EntityUsers) BeforeUpdate(db *gorm.DB) {
+	entity.UpdatedAt = time.Now().Local()
 }

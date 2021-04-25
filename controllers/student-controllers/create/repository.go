@@ -34,7 +34,6 @@ func (r *repository) CreateStudentRepository(input *model.EntityStudent) (*model
 	students.Npm = input.Npm
 	students.Fak = input.Fak
 	students.Bid = input.Bid
-	students.CreatedAt = input.CreatedAt
 
 	addNewStudent := db.Debug().Create(&students)
 	db.Commit()

@@ -18,9 +18,9 @@ func NewServiceDelete(repository Repository) *service {
 
 func (s *service) DeleteStudentService(input *InputDeleteStudent) (*model.EntityStudent, string) {
 
-	var students model.EntityStudent
-
-	students.ID = input.ID
+	students := model.EntityStudent{
+		ID: input.ID,
+	}
 
 	resultCreateStudent, errCreateStudent := s.repository.DeleteStudentRepository(&students)
 

@@ -36,7 +36,6 @@ func (r *repository) UpdateStudentRepository(input *model.EntityStudent) (*model
 	students.Npm = input.Npm
 	students.Fak = input.Fak
 	students.Bid = input.Bid
-	students.UpdatedAt = input.UpdatedAt
 
 	updateStudent := db.Debug().Select("name", "npm", "fak", "bid", "updated_at").Where("id = ?", input.ID).Updates(students)
 
