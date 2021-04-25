@@ -22,11 +22,12 @@ RUN apt-get clean \
 
 FROM builder
 WORKDIR /usr/src/app
-COPY --from=builder . ./usr/src/app
 RUN apt-get update \
   && apt-get install -y \
-  build-essential \
-  && make
+  make \
+  vim \
+  build-essential
+COPY --from=builder . ./usr/src/app
 RUN make goprod
 EXPOSE 4000
 CMD ["./main"]

@@ -24,7 +24,7 @@ services:
         sleep 3 &&
         rmdir "${PWD}/healthcheck" &&
         clear
-      timeout: 30ms
+      timeout: 60ms
     env_file:
       - .env
     ports:
@@ -56,7 +56,7 @@ services:
         sleep 3 &&
         rmdir "${PWD}/healthcheck" &&
         clear
-      timeout: 30ms
+      timeout: 60ms
     environment:
       POSTGRES_DB: campus
       POSTGRES_USER: restuwahyu13
@@ -90,7 +90,7 @@ services:
         sleep 3 &&
         rmdir "${PWD}/healthcheck" &&
         clear
-      timeout: 30ms
+      timeout: 60ms
     ports:
       - 8080:8080
     networks:
@@ -99,7 +99,9 @@ services:
   ### SWAGGER SERVICE
   ### ===================
   doc:
-    image: swaggerapi/swagger-ui:latest
+    build:
+      context: .
+      dockerfile: swagger/Dockerfile
     restart: always
     healthcheck:
       interval: 120ms
@@ -118,13 +120,11 @@ services:
         sleep 3 &&
         rmdir "${PWD}/healthcheck" &&
         clear
-      timeout: 30ms
+      timeout: 60ms
     environment:
-      - CONFIG_URL: openapi.yml
+      - SWAGGER_JSON=swagger/openapi.yml
     ports:
-      - 8081:8080
-    volumes:
-      - ${PWD}/openapi.yml:/usr/share/nginx/html/swagger
+      - 80:8080
     networks:
       - restapi_network
   ### ========================

@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Rest API
+  description: example go using gin framework implementation rest api
+  contact:
+    name: restu wahyu saputra
+    email: restuwahyu13@gmail.com
+servers:
+  - url: http://localhost:4000/api/v1
+    description: go service api server endpoint application
+    variables:
+      protocol:
+        enum:
+          - http
+          - https
+        default: http
+paths:
+  /register:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Register
+      description: register new users account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullname:
+                  type: string
+                  example: restu wahyu saputra
+                email:
+                  type: string
+                  format: email
+                  example: restuwahyu13@zetmail.com
+                password:
+                  type: string
+                  format: password
+                  example: qwerty123456789
+              required:
+                - fullname
+                - email
+                - password
+      responses:
+        '200':
+          description: Register new account successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fullname:
+                    type: string
+                    example: restu wahyu saputra
+                  email:
+                    type: string
+                    format: email
+                    example: restuwahyu13@zetmail.com
+                  password:
+                    type: string
+                    format: password
+                    example: qwerty123456789
+                required:
+                  - fullname
+                  - email
+                  - password
+        '400':
+          description: |
+            Parsing json data failed,
+            Generate accessToken failed,
+            Sending email activation failed
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: |
+            Authorization is required for this endpoint,
+            Register new account failed"
+        '409':
+          description: Email already exist
+  /login:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Login
+      description: login user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: restuwahyu13@zetmail.com
+                password:
+                  type: string
+                  format: password
+                  example: qwerty123456789
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fullname:
+                    type: string
+                    example: restu wahyu saputra
+                  email:
+                    type: string
+                    format: email
+                    example: restuwahyu13@zetmail.com
+                  password:
+                    type: string
+                    format: password
+                    example: qwerty123456789
+                required:
+                  - fullname
+                  - email
+                  - password
+        '400':
+          description: |
+            Parsing json data failed,
+            Generate accessToken failed
+        '401':
+          description: accessToken invalid or expired
+        '403':
+          description: |
+            Authorization is required for this endpoint,
+            User account is not active,
+            Username or password is wrong
+        '404':
+          description: User account is not registered
