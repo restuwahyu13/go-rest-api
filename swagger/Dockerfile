@@ -1,3 +1,3 @@
 FROM swaggerapi/swagger-ui:latest
 USER ${USER}
-COPY ./swagger/swagger.yml /usr/share/nginx/html
+COPY ./swagger/openapi.yml /usr/share/nginx/html
