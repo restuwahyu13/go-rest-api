@@ -2,7 +2,6 @@ package handlerUpdateStudent
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	updateStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/update"
@@ -27,10 +26,7 @@ func (h *handler) UpdateStudentHandler(ctx *gin.Context) {
 		defer logrus.Error(err.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
-		id := ctx.Param("id")
-		toUinteger, _ := strconv.ParseUint(id, 32, 32)
-
-		input.ID = toUinteger
+		input.ID = ctx.Param("id")
 		_, errUpdateStudent := h.service.UpdateStudentService(&input)
 
 		switch errUpdateStudent {

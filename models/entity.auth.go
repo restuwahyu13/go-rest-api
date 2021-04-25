@@ -5,7 +5,7 @@ import (
 )
 
 type EntityUsers struct {
-	ID        uint   `gorm:"type:bigserial;primaryKey;autoIncrement"`
+	ID        string `gorm:"type:uuid;primaryKey;autoIncrement"`
 	Fullname  string `gorm:"type:varchar(255);unique;not null"`
 	Email     string `gorm:"type:varchar(255);unique;not null"`
 	Password  string `gorm:"type:varchar(255);not null"`

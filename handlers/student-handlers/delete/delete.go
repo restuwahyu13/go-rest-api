@@ -2,7 +2,6 @@ package handlerDeleteStudent
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	deleteStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/delete"
@@ -20,10 +19,7 @@ func NewHandlerDeleteStudent(service deleteStudent.Service) *handler {
 func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 
 	var input deleteStudent.InputDeleteStudent
-	id := ctx.Param("id")
-	toUinteger, _ := strconv.ParseUint(id, 32, 32)
-
-	input.ID = toUinteger
+	input.ID = ctx.Param("id")
 
 	_, errDeleteStudent := h.service.DeleteStudentService(&input)
 

@@ -2,7 +2,6 @@ package handlerResultStudent
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	resultStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/result"
@@ -20,10 +19,7 @@ func NewHandlerResultStudent(service resultStudent.Service) *handler {
 func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 
 	var input resultStudent.InputResultStudent
-	id := ctx.Param("id")
-	toUinteger, _ := strconv.ParseUint(id, 32, 32)
-
-	input.ID = toUinteger
+	input.ID = ctx.Param("id")
 
 	resultStudent, errResultStudent := h.service.ResultStudentService(&input)
 
