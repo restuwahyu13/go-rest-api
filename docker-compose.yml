@@ -67,6 +67,66 @@ services:
       - pg-data:/var/lib/postgresql/data
     networks:
       - restapi_network
+  ### ===================
+  ### ADMINER SERVICE
+  ### ===================
+  panel:
+    image: adminer:latest
+    restart: always
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        sleep 3 &&
+        rm "${PWD}/healthcheck.txt"
+        cd .. &&
+        sleep 3 &&
+        rmdir "${PWD}/healthcheck" &&
+        clear
+      timeout: 30ms
+    ports:
+      - 8080:8080
+    networks:
+      - restapi_network
+  ### ===================
+  ### SWAGGER SERVICE
+  ### ===================
+  doc:
+    image: swaggerapi/swagger-ui:latest
+    restart: always
+    healthcheck:
+      interval: 120ms
+      retries: 5
+      start_period: 60ms
+      test: |
+        touch /tmp/healthcheck.txt &&
+        mkdir /tmp/healthcheck &&
+        mv /tmp/healthcheck.txt /tmp/healthcheck &&
+        cd /tmp/healthcheck &&
+        echo "hello my docker container is working fine" >> healthcheck.txt &&
+        cat healthcheck.txt &&
+        sleep 3 &&
+        rm "${PWD}/healthcheck.txt"
+        cd .. &&
+        sleep 3 &&
+        rmdir "${PWD}/healthcheck" &&
+        clear
+      timeout: 30ms
+    environment:
+      - CONFIG_URL: openapi.yml
+    ports:
+      - 8081:8080
+    volumes:
+      - ${PWD}/openapi.yml:/usr/share/nginx/html/swagger
+    networks:
+      - restapi_network
   ### ========================
   ### VOLUMES PERSISTENT DATA
   ### ========================
