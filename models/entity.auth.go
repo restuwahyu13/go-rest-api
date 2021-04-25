@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	util "github.com/restuwahyu13/gin-rest-api/utils"
 	"gorm.io/gorm"
 )
 
@@ -17,11 +18,14 @@ type EntityUsers struct {
 	UpdatedAt time.Time
 }
 
-func (entity *EntityUsers) BeforeCreate(db *gorm.DB) {
+func (entity *EntityUsers) BeforeCreate(db *gorm.DB) error {
 	entity.ID = uuid.New().String()
+	entity.Password = util.HashPassword(entity.Password)
 	entity.CreatedAt = time.Now().Local()
+	return nil
 }
 
-func (entity *EntityUsers) BeforeUpdate(db *gorm.DB) {
+func (entity *EntityUsers) BeforeUpdate(db *gorm.DB) error {
 	entity.UpdatedAt = time.Now().Local()
+	return nil
 }

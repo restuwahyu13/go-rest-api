@@ -17,11 +17,13 @@ type EntityStudent struct {
 	UpdatedAt time.Time
 }
 
-func (entity *EntityStudent) BeforeCreate(db *gorm.DB) {
+func (entity *EntityStudent) BeforeCreate(db *gorm.DB) error {
 	entity.ID = uuid.New().String()
 	entity.CreatedAt = time.Now().Local()
+	return nil
 }
 
-func (entity *EntityStudent) BeforeUpdate(db *gorm.DB) {
+func (entity *EntityStudent) BeforeUpdate(db *gorm.DB) error {
 	entity.UpdatedAt = time.Now().Local()
+	return nil
 }
