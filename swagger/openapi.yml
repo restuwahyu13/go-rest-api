@@ -1,20 +1,25 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Rest API
+  title: Go Gin Framework Rest API
   description: example go using gin framework implementation rest api
   contact:
     name: restu wahyu saputra
     email: restuwahyu13@gmail.com
 servers:
-  - url: http://localhost:4000/api/v1
+  - url: '{protocol}://{host}:4000/api/v1'
     description: go service api server endpoint application
     variables:
+      host:
+        default: localhost
+        enum:
+          - localhost
+          - app
       protocol:
+        default: http
         enum:
           - http
           - https
-        default: http
 paths:
   /register:
     post:

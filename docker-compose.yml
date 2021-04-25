@@ -122,6 +122,7 @@ services:
         clear
       timeout: 60ms
     environment:
+      - URL=http://restapi.swagger.io/v1/openapi.yml
       - SWAGGER_JSON=swagger/openapi.yml
     ports:
       - 80:8080
