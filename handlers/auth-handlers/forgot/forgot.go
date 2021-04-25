@@ -33,8 +33,8 @@ func (h *handler) ForgotHandler(ctx *gin.Context) {
 		case "FORGOT_NOT_FOUD_404":
 			util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
 
-		case "FORGOT_NOT_ACTIVE_400":
-			util.APIResponse(ctx, "User account is not active", http.StatusNotFound, http.MethodPost, nil)
+		case "FORGOT_NOT_ACTIVE_403":
+			util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
 
 		case "FORGOT_PASSWORD_FAILED_403":
 			util.APIResponse(ctx, "Forgot password failed", http.StatusForbidden, http.MethodPost, nil)

@@ -19,6 +19,9 @@ servers:
         enum:
           - localhost
 paths:
+  ############################
+  ## REGISTER AUTH ENDPOINT
+  ############################
   /register:
     post:
       tags:
@@ -71,14 +74,13 @@ paths:
             Parsing json data failed,
             Generate accessToken failed,
             Sending email activation failed
-        '401':
-          description: accessToken invalid or expired
         '403':
-          description: |
-            Authorization is required for this endpoint,
-            Register new account failed"
+          description: Register new account failed"
         '409':
           description: Email already exist
+  ############################
+  ## LOGIN AUTH ENDPOINT
+  ############################
   /login:
     post:
       tags:
@@ -120,11 +122,6 @@ paths:
                     type: string
                   data:
                     type: object
-                    properties:
-                      accessToken:
-                        type: string
-                    required:
-                      - accessToken
                 required:
                   - statusCode
                   - method
@@ -134,12 +131,200 @@ paths:
           description: |
             Parsing json data failed,
             Generate accessToken failed
-        '401':
-          description: accessToken invalid or expired
         '403':
           description: |
-            Authorization is required for this endpoint,
             User account is not active,
             Username or password is wrong
         '404':
           description: User account is not registered
+  ############################
+  ## ACTIVATION AUTH ENDPOINT
+  ############################
+  /activation/{token}:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Activation
+      description: activation user account
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImFsZGlraGFuMTNAemV0bWFpbC5jb20iLCJleHBpcmVkQXQiOjE2MTkyNzkyMDksImlkIjoxMX0.jKxrGfrkNrINdixekYGuDKen24LMGgLCnrXLD3R7Yw8
+      responses:
+        '200':
+          description: Activation account success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: |
+            Parsing json data failed,
+            User account hash been active please login
+        '403':
+          description: Activation account failed
+        '404':
+          description: User account is not exist
+  #############################
+  ## RESEND TOKEN AUTH ENDPOINT
+  #############################
+  /resend-token:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Resend
+      description: resend new activation token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: restuwahyu13@zetmail.com
+              required:
+                - email
+      responses:
+        '200':
+          description: Resend new activation token successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: |
+            Parsing json data failed,
+            Generate accessToken failed,
+            Sending email resend activation failed
+        '403':
+          description: User account is not active
+        '404':
+          description: Email is not never registered
+  #################################
+  ## FORGOT PASSWORD AUTH ENDPOINT
+  #################################
+  /forgot-password:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Forgot
+      description: forgot password account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: restuwahyu13@zetmail.com
+              required:
+                - email
+      responses:
+        '200':
+          description: Forgot password successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: |
+            Parsing json data failed,
+            Generate accessToken failed,
+            Sending email reset password failed
+        '403':
+          description: |
+            User account is not active,
+            Forgot password failed
+        '404':
+          description: Email is not never registered
+  #################################
+  ## CHANGE PASSWORD AUTH ENDPOINT
+  #################################
+  /change-password/{token}:
+    post:
+      tags:
+        - Auth Endpoint
+      summary: Auth Login
+      description: login user account
+      parameters:
+        - in: path
+          name: token
+          required: true
+          schema:
+            type: string
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uIjp0cnVlLCJlbWFpbCI6ImFsZGlraGFuMTNAemV0bWFpbC5jb20iLCJleHBpcmVkQXQiOjE2MTkyNzkyMDksImlkIjoxMX0.jKxrGfrkNrINdixekYGuDKen24LMGgLCnrXLD3R7Yw8
+      responses:
+        '200':
+          description: Change new password successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    format: number
+                  method:
+                    type: string
+                  message:
+                    type: string
+                required:
+                  - statusCode
+                  - method
+                  - message
+        '400':
+          description: |
+            Parsing json data failed,
+            Verified activation token failed,
+            Confirm Password is not match with Password
+        '403':
+          description: |
+            User account is not active,
+            Change new password failed
+        '404':
+          description: User account is not exist

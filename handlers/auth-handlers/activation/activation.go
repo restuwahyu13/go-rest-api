@@ -36,7 +36,7 @@ func (h *handler) ActivationHandler(ctx *gin.Context) {
 		switch errActivation {
 
 		case "ACTIVATION_NOT_FOUND_404":
-			util.APIResponse(ctx, "User account is not exists", http.StatusNotFound, http.MethodPost, nil)
+			util.APIResponse(ctx, "User account is not exist", http.StatusNotFound, http.MethodPost, nil)
 
 		case "ACTIVATION_ACTIVE_400":
 			util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)

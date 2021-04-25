@@ -37,7 +37,7 @@ func (r *repository) ResetRepository(input *model.EntityUsers) (*model.EntityUse
 	}
 
 	if !users.Active {
-		errorCode <- "ACCOUNT_NOT_ACTIVE_400"
+		errorCode <- "ACCOUNT_NOT_ACTIVE_403"
 		return &users, <-errorCode
 	}
 

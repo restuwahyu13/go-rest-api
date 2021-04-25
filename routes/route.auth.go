@@ -54,7 +54,7 @@ func InitAuthRoutes(db *gorm.DB, route *gin.Engine) {
 	groupRoute.POST("/login", loginHandler.LoginHandler)
 	groupRoute.POST("/activation/:token", activationHandler.ActivationHandler)
 	groupRoute.POST("/resend-token", resendHandler.ResendHandler)
-	groupRoute.POST("/reset-password", forgotHandler.ForgotHandler)
+	groupRoute.POST("/forgot-password", forgotHandler.ForgotHandler)
 	groupRoute.POST("/change-password/:token", resetHandler.ResetHandler)
 
 }

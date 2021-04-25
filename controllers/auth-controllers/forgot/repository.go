@@ -35,7 +35,7 @@ func (r *repository) ForgotRepository(input *model.EntityUsers) (*model.EntityUs
 	}
 
 	if !users.Active {
-		errorCode <- "FORGOT_NOT_ACTIVE_400"
+		errorCode <- "FORGOT_NOT_ACTIVE_403"
 		return &users, <-errorCode
 	}
 

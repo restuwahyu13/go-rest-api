@@ -31,10 +31,10 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 		switch errResend {
 
 		case "RESEND_NOT_FOUD_404":
-			util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodGet, nil)
+			util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
 
-		case "RESEND_NOT_ACTIVE_400":
-			util.APIResponse(ctx, "User account is not active", http.StatusNotFound, http.MethodGet, nil)
+		case "RESEND_NOT_ACTIVE_403":
+			util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
 
 		default:
 			accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
