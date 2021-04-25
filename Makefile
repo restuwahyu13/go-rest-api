@@ -21,7 +21,7 @@ dcd:
 #== GOLANG ENVIRONMENT
 #================================
 GO := @go
-GIN := @gin
+GIN := gin
 
 goinstall:
 	${GO} get .

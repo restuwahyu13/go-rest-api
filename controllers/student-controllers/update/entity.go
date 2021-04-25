@@ -1,6 +1,8 @@
 package updateStudent
 
-import "time"
+import (
+	"time"
+)
 
 type InputUpdateStudent struct {
 	ID        string `binding:"required"`
