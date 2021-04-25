@@ -29,9 +29,8 @@ func main() {
 	@description Setup Middleware
 	*/
 	router.Use(cors.New(cors.Config{
-		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
-		AllowCredentials: true,
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"},
 	}))
 	router.Use(helmet.Default())
 	router.Use(gzip.Gzip(gzip.BestCompression))
