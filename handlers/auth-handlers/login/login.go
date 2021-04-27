@@ -25,40 +25,64 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 	if errs != nil {
 		defer logrus.Error(errs.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
+		return
 	} else {
-		resultLogin, errLogin := h.service.LoginService(&input)
+		errValidator := util.GoValidator(input)
+		errResponse := util.ValidatorErrorResponse(errValidator)
 
-		switch errLogin {
+		ctx.JSON(http.StatusBadRequest, errResponse)
 
-		case "LOGIN_NOT_FOUND_404":
-			util.APIResponse(ctx, "User account is not registered", http.StatusNotFound, http.MethodPost, nil)
+		// if errValidator["Email"] == "" {
+		// 	defer logrus.Error(errValidator)
+		// 	util.ValidatorErrorResponse(ctx, "Email is required", http.StatusBadRequest, http.MethodPost, "email", input.Email)
+		// 	return
+		// }
 
-		case "LOGIN_NOT_ACTIVE_403":
-			util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
+		// if errValidator["Password"] == "" {
+		// 	defer logrus.Error(errValidator)
+		// 	util.ValidatorErrorResponse(ctx, "Password is required", http.StatusBadRequest, http.MethodPost, "password", input.Password)
+		// 	return
+		// }
 
-		case "LOGIN_WRONG_PASSWORD_403":
-			util.APIResponse(ctx, "Username or password is wrong", http.StatusForbidden, http.MethodPost, nil)
+		// if errValidator["Email"] == input.Email {
+		// 	defer logrus.Error(errValidator)
+		// 	util.ValidatorErrorResponse(ctx, "Email is not valid", http.StatusBadRequest, http.MethodPost, "email", input.Email)
+		// 	return
+		// }
 
-		default:
-			errValidator := util.GoValidator(input)
+		// if errValidator["Password"] == input.Password {
+		// 	defer logrus.Error(errValidator)
+		// 	util.ValidatorErrorResponse(ctx, "Email is not valid", http.StatusBadRequest, http.MethodPost, "password", input.Password)
+		// 	return
+		// }
 
-			if errValidator["Email"] == "" {
-				util.APIResponse(ctx, "Email is required", http.StatusBadRequest, http.MethodPost, input.Email)
-			}
+	// 	resultLogin, errLogin := h.service.LoginService(&input)
 
-			if errValidator["Email"] == input.Email {
-				util.APIResponse(ctx, "Email is not valid", http.StatusBadRequest, http.MethodPost, input.Email)
-			}
+	// 	switch errLogin {
 
-			accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
-			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 86400)
+	// 	case "LOGIN_NOT_FOUND_404":
+	// 		util.APIResponse(ctx, "User account is not registered", http.StatusNotFound, http.MethodPost, nil)
+	// 		return
 
-			if errToken != nil {
-				defer logrus.Error(errToken.Error())
-				util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
-			}
+	// 	case "LOGIN_NOT_ACTIVE_403":
+	// 		util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
+	// 		return
 
-			util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": accessToken})
-		}
+	// 	case "LOGIN_WRONG_PASSWORD_403":
+	// 		util.APIResponse(ctx, "Username or password is wrong", http.StatusForbidden, http.MethodPost, nil)
+	// 		return
+
+	// 	default:
+	// 		accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
+	// 		accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 86400)
+
+	// 		if errToken != nil {
+	// 			defer logrus.Error(errToken.Error())
+	// 			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
+	// 			return
+	// 		}
+
+	// 		util.APIResponse(ctx, "Login successfully", http.StatusOK, http.MethodPost, map[string]string{"accessToken": accessToken})
+	// 	}
 	}
 }

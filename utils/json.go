@@ -13,9 +13,9 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
-func Strigify(payload map[string]interface{}) []byte {
+func Strigify(payload map[string]interface{}) string{
 	response, _ := json.Marshal(payload)
-	return response
+	return string(response)
 }
 
 func Parse(payload []byte) Response {
