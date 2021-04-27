@@ -20,10 +20,10 @@ func NewHandlerLogin(service loginAuth.Service) *handler {
 func (h *handler) LoginHandler(ctx *gin.Context) {
 	var input loginAuth.InputLogin
 
-	err := ctx.ShouldBindJSON(&input)
+	errs := ctx.ShouldBindJSON(&input)
 
-	if err != nil {
-		defer logrus.Error(err.Error())
+	if errs != nil {
+		defer logrus.Error(errs.Error())
 		util.APIResponse(ctx, "Parsing json data failed", http.StatusBadRequest, http.MethodPost, nil)
 	} else {
 		resultLogin, errLogin := h.service.LoginService(&input)
@@ -40,6 +40,16 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 			util.APIResponse(ctx, "Username or password is wrong", http.StatusForbidden, http.MethodPost, nil)
 
 		default:
+			errValidator := util.GoValidator(input)
+
+			if errValidator["Email"] == "" {
+				util.APIResponse(ctx, "Email is required", http.StatusBadRequest, http.MethodPost, input.Email)
+			}
+
+			if errValidator["Email"] == input.Email {
+				util.APIResponse(ctx, "Email is not valid", http.StatusBadRequest, http.MethodPost, input.Email)
+			}
+
 			accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
 			accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 86400)
 

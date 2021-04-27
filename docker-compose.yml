@@ -18,12 +18,10 @@ services:
         cd /tmp/healthcheck &&
         echo "hello my docker container is working fine" >> healthcheck.txt &&
         cat healthcheck.txt &&
-        sleep 3 &&
-        rm "${PWD}/healthcheck.txt"
+        rm healthcheck.txt &&
         cd .. &&
-        sleep 3 &&
-        rmdir "${PWD}/healthcheck" &&
-        clear
+        rmdir /tmp/healthcheck
+        cls
       timeout: 60ms
     env_file:
       - .env
@@ -50,12 +48,10 @@ services:
         cd /tmp/healthcheck &&
         echo "hello my docker container is working fine" >> healthcheck.txt &&
         cat healthcheck.txt &&
-        sleep 3 &&
-        rm "${PWD}/healthcheck.txt"
+        rm healthcheck.txt &&
         cd .. &&
-        sleep 3 &&
-        rmdir "${PWD}/healthcheck" &&
-        clear
+        rmdir /tmp/healthcheck
+        cls
       timeout: 60ms
     environment:
       POSTGRES_DB: campus
@@ -84,12 +80,10 @@ services:
         cd /tmp/healthcheck &&
         echo "hello my docker container is working fine" >> healthcheck.txt &&
         cat healthcheck.txt &&
-        sleep 3 &&
-        rm "${PWD}/healthcheck.txt"
+        rm healthcheck.txt &&
         cd .. &&
-        sleep 3 &&
-        rmdir "${PWD}/healthcheck" &&
-        clear
+        rmdir /tmp/healthcheck
+        cls
       timeout: 60ms
     ports:
       - 8080:8080
@@ -114,12 +108,10 @@ services:
         cd /tmp/healthcheck &&
         echo "hello my docker container is working fine" >> healthcheck.txt &&
         cat healthcheck.txt &&
-        sleep 3 &&
-        rm "${PWD}/healthcheck.txt"
+        rm healthcheck.txt &&
         cd .. &&
-        sleep 3 &&
-        rmdir "${PWD}/healthcheck" &&
-        clear
+        rmdir /tmp/healthcheck
+        cls
       timeout: 60ms
     environment:
       - URL=http://localhost/openapi.yml

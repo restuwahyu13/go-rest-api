@@ -24,7 +24,7 @@ func main() {
 	/**
 	@description Setup Mode Application
 	*/
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 	/**
 	@description Setup Middleware
 	*/
