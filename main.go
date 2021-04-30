@@ -24,7 +24,11 @@ func main() {
 	/**
 	@description Setup Mode Application
 	*/
-	gin.SetMode(gin.DebugMode)
+	if util.GodotEnv("GO_ENV") != "production" {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	/**
 	@description Setup Middleware
 	*/

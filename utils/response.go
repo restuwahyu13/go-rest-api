@@ -12,7 +12,9 @@ type Responses struct {
 }
 
 type ErrorResponse struct {
-	Results    interface{} `json:"results"`
+	StatusCode int         `json:"statusCode"`
+	Method     string      `json:"method"`
+	Error       interface{} `json:"error"`
 }
 
 func APIResponse(ctx *gin.Context, Message string, StatusCode int, Method string, Data interface{}) {
@@ -32,28 +34,13 @@ func APIResponse(ctx *gin.Context, Message string, StatusCode int, Method string
 	}
 }
 
-func ValidatorErrorResponse(errValidator map[string]interface{}) *ErrorResponse {
-
-	var errors ErrorResponse
-	// var storeData = []string{}
-	// var storeResult = append(storeData, Data)
-
-	errDataCollection := make(map[string][]map[string]interface{})
-
-	for i, v := range errValidator {
-		errorResults := make(map[string]interface{})
-		errorResults[i] = v
-		errDataCollection["errors"] = append(errDataCollection["errors"], errorResults)
+func ValidatorErrorResponse(ctx *gin.Context, StatusCode int, Method string, Error interface{})  {
+	errResponse := ErrorResponse{
+		StatusCode: StatusCode,
+		Method:     Method,
+		Error:      Error,
 	}
 
-	// errors.StatusCode = StatusCode
-	// errors.Method = Method
-	errors.Results = errDataCollection
-
-	// fmt.Println(errDataCollection)
-
-	return &errors
-
-	// ctx.JSON(StatusCode, errors)
-	// defer ctx.AbortWithStatus(StatusCode)
+	ctx.JSON(StatusCode, errResponse)
+	defer ctx.AbortWithStatus(StatusCode)
 }

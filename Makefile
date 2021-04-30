@@ -21,13 +21,13 @@ dcd:
 #== GOLANG ENVIRONMENT
 #================================
 GO := @go
-GIN := gin
+GIN := @gin
 
 goinstall:
 	${GO} get .
 
 godev:
-	${GIN} -a 4000 -p 3001 -b bin/gin-bin run server.go
+	${GIN} -a 4000 -p 3001 -b bin/gin-bin run main.go
 
 goprod:
 	${GO} build -o main .
