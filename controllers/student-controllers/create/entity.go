@@ -1,8 +1,8 @@
 package createStudent
 
 type InputCreateStudent struct {
-	Name string `json:"name" binding:"required"`
-	Npm  int    `json:"npm" binding:"required"`
-	Fak  string `json:"fak" binding:"required"`
-	Bid  string `json:"bid" binding:"required"`
+	Name string `json:"name" validate:"required,lowercase"`
+	Npm  int    `json:"npm" validate:"required,number"`
+	Fak  string `json:"fak" validate:"required,lowercase"`
+	Bid  string `json:"bid" validate:"required,lowercase"`
 }
