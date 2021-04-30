@@ -1,6 +1,6 @@
 ## Golang Gin Framework Fundamental
 
-Example golang using in framework everything you need, i create this tutorial special for beginner
+Example golang using gin framework everything you need, i create this tutorial special for beginner.
 
 ### Feature
 
