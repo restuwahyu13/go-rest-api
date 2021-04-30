@@ -32,8 +32,8 @@ func (r *repository) ResendRepository(input *model.EntityUsers) (*model.EntityUs
 		return &users, <-errorCode
 	}
 
-	if !users.Active {
-		errorCode <- "RESEND_NOT_ACTIVE_400"
+	if users.Active {
+		errorCode <- "RESEND_ACTIVE_403"
 		return &users, <-errorCode
 	} else {
 		errorCode <- "nil"

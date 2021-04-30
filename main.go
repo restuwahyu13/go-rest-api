@@ -14,18 +14,31 @@ import (
 
 func main() {
 	/**
+	@description Setup Server
+	*/
+	router := SetupRouter()
+	/**
+	@description Run Server
+	*/
+	log.Fatal(router.Run(":" + util.GodotEnv("GO_PORT")))
+}
+
+func SetupRouter() *gin.Engine {
+	/**
 	@description Setup Database Connection
 	*/
 	db := config.Connection()
 	/**
-	@description Setup Router
+	@description Init Router
 	*/
 	router := gin.Default()
 	/**
 	@description Setup Mode Application
 	*/
-	if util.GodotEnv("GO_ENV") != "production" {
+	if util.GodotEnv("GO_ENV") != "production" && util.GodotEnv("GO_ENV") != "test"  {
 		gin.SetMode(gin.DebugMode)
+	} else if util.GodotEnv("GO_ENV") == "test" {
+		gin.SetMode(gin.TestMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -45,8 +58,6 @@ func main() {
 	*/
 	route.InitAuthRoutes(db, router)
 	route.InitStudentRoutes(db, router)
-	/**
-	@description Setup Server
-	*/
-	log.Fatal(router.Run(":" + util.GodotEnv("GO_PORT")))
+
+	return router
 }

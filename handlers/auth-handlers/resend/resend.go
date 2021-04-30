@@ -53,8 +53,8 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 				util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
 				return
 
-			case "RESEND_NOT_ACTIVE_403":
-				util.APIResponse(ctx, "User account is not active", http.StatusForbidden, http.MethodPost, nil)
+			case "RESEND_ACTIVE_403":
+				util.APIResponse(ctx, "User account hash been active", http.StatusForbidden, http.MethodPost, nil)
 				return
 
 			default:
@@ -75,6 +75,6 @@ func (h *handler) ResendHandler(ctx *gin.Context) {
 					return
 				}
 
-				util.APIResponse(ctx, "Resend new activation token successfully", http.StatusNotFound, http.MethodPost, nil)
+				util.APIResponse(ctx, "Resend new activation token successfully", http.StatusOK, http.MethodPost, nil)
 		}
 }

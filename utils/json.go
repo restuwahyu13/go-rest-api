@@ -7,15 +7,15 @@ import (
 )
 
 type Response struct {
-	Message string      `json:"message"`
-	Code    int         `json:"code"`
-	Status  string      `json:"status"`
-	Data    interface{} `json:"data"`
+	StatusCode int `json:"statusCode"`
+	Method     string `json:"method"`
+	Message    string  `json:"message"`
+	Data     interface{} `json:"data"`
 }
 
-func Strigify(payload map[string]interface{}) string{
+func Strigify(payload interface{}) []byte {
 	response, _ := json.Marshal(payload)
-	return string(response)
+	return response
 }
 
 func Parse(payload []byte) Response {
@@ -23,7 +23,7 @@ func Parse(payload []byte) Response {
 	err := json.Unmarshal(payload, &jsonResponse)
 
 	if err != nil {
-		logrus.Error(err.Error())
+		logrus.Fatal(err.Error())
 	}
 
 	return jsonResponse

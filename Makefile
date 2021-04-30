@@ -33,4 +33,4 @@ goprod:
 	${GO} build -o main .
 
 gotest:
-	${GO} test
+	${GO} test main.go main_test.go -v
