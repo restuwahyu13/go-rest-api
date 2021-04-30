@@ -11,6 +11,11 @@ ifdef f
 	${COMPOSE} up -d --${f}
 endif
 
+dcubf:
+ifdef f
+	${COMPOSE} up -d --build --${f}
+endif
+
 dcu:
 	${COMPOSE} up -d --build
 
