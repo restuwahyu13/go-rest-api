@@ -40,7 +40,7 @@ func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 	errResponse, errCount := util.GoValidator(&input, config.Options)
 
 	if errCount > 0  {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodDelete, errResponse)
 		return
 	}
 
@@ -49,14 +49,14 @@ func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 	switch errDeleteStudent {
 
 		case "DELETE_STUDENT_NOT_FOUND_404":
-			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusForbidden, http.MethodPost, nil)
+			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusForbidden, http.MethodDelete, nil)
 			return
 
 		case "DELETE_STUDENT_FAILED_403":
-			util.APIResponse(ctx, "Delete student data failed", http.StatusForbidden, http.MethodPost, nil)
+			util.APIResponse(ctx, "Delete student data failed", http.StatusForbidden, http.MethodDelete, nil)
 			return
 
 		default:
-			util.APIResponse(ctx, "Delete student data successfully", http.StatusOK, http.MethodPost, nil)
+			util.APIResponse(ctx, "Delete student data successfully", http.StatusOK, http.MethodDelete, nil)
 	}
 }

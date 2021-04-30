@@ -1,5 +1,5 @@
 package resultStudent
 
 type InputResultStudent struct {
-	ID string `binding:"required"`
+	ID string `validate:"required,uuid"`
 }

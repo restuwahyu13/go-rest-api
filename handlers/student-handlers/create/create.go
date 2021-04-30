@@ -40,9 +40,9 @@ func (h *handler) CreateStudentHandler(ctx *gin.Context) {
 					Message: "npm is required on body",
 				},
 				gpc.ErrorMetaConfig{
-					Tag: "lowercase",
-					Field: "Name",
-					Message: "npm must be number",
+					Tag: "number",
+					Field: "Npm",
+					Message: "npm must be number format",
 				},
 				gpc.ErrorMetaConfig{
 					Tag: "required",

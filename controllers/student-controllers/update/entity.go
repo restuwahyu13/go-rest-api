@@ -5,10 +5,10 @@ import (
 )
 
 type InputUpdateStudent struct {
-	ID        string `binding:"required"`
-	Name      string `json:"name" binding:"required"`
-	Npm       int    `json:"npm" binding:"required"`
-	Fak       string `json:"fak" binding:"required"`
-	Bid       string `json:"bid" binding:"required"`
+	ID        string `validate:"required,uuid"`
+	Name      string `json:"name" validate:"required,lowercase"`
+	Npm       int    `json:"npm" validate:"required,number"`
+	Fak       string `json:"fak" validate:"required,lowercase"`
+	Bid       string `json:"bid" validate:"required,lowercase"`
 	UpdatedAt time.Time
 }

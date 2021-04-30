@@ -40,7 +40,7 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 	errResponse, errCount := util.GoValidator(&input, config.Options)
 
 	if errCount > 0  {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
 		return
 	}
 
@@ -49,10 +49,10 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 	switch errResultStudent {
 
 		case "RESULT_STUDENT_NOT_FOUND_404":
-			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusConflict, http.MethodPost, nil)
+			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusNotFound, http.MethodGet, nil)
 			return
 
 		default:
-			util.APIResponse(ctx, "Result Student data successfully", http.StatusOK, http.MethodPost, resultStudent)
+			util.APIResponse(ctx, "Result Student data successfully", http.StatusOK, http.MethodGet, resultStudent)
 	}
 }
