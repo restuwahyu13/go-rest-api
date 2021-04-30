@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"testing"
 
@@ -13,6 +14,7 @@ import (
 )
 
 var router = SetupRouter()
+var accessToken = make(chan interface{}, 1)
 
 func TestLoginHandler(t *testing.T) {
 
@@ -34,10 +36,10 @@ func TestLoginHandler(t *testing.T) {
 			assert.Equal(t, 404, response.StatusCode)
 		})
 
-		Convey("Login Failed", func() {
+		Convey("Login Failed User Account Is Not Active", func() {
 			payload := gin.H{
-				"email": "samsul1@zetmail.com",
-				"password":  "restuwahyu13",
+				"email": "carmelo_marquardt@weissnat.info",
+				"password":  "testing13",
 			}
 
 			rr := util.HttpTestRequest(router, http.MethodPost, "/api/v1/login", util.Strigify(payload))
@@ -50,10 +52,26 @@ func TestLoginHandler(t *testing.T) {
 			assert.Equal(t, 403, response.StatusCode)
 		})
 
+		Convey("Login Error Username Or Password Is Wrong", func() {
+			payload := gin.H{
+				"email": "eduardo.wehner@greenholtadams.net",
+				"password":  "testing",
+			}
+
+			rr := util.HttpTestRequest(router, http.MethodPost, "/api/v1/login", util.Strigify(payload))
+
+			response := util.Parse(rr.Body.Bytes())
+			logrus.Info(response)
+
+			assert.Equal(t, "Username or password is wrong", response.Message)
+			assert.Equal(t, http.MethodPost, response.Method)
+			assert.Equal(t, 403, response.StatusCode)
+		})
+
 		Convey("Login Success", func() {
 			payload := gin.H{
-				"email": "restuwahyu13@zetmail.com",
-				"password":  "restuwahyu13",
+				"email": "eduardo.wehner@greenholtadams.net",
+				"password":  "qwerty12345",
 			}
 
 			rr := util.HttpTestRequest(router, http.MethodPost, "/api/v1/login", util.Strigify(payload))
@@ -64,6 +82,11 @@ func TestLoginHandler(t *testing.T) {
 			assert.Equal(t, "Login successfully", response.Message)
 			assert.Equal(t, http.MethodPost, response.Method)
 			assert.Equal(t, 200, response.StatusCode)
+
+			var token map[string]interface{}
+			encoded := util.Strigify(response.Data)
+			_ = json.Unmarshal(encoded, &token)
+			accessToken <- token["accessToken"]
 		})
 
 	})
@@ -190,6 +213,31 @@ func TestResendHandler(t *testing.T) {
 			logrus.Info(response)
 
 			assert.Equal(t, "Resend new activation token successfully", response.Message)
+			assert.Equal(t, http.MethodPost, response.Method)
+			assert.Equal(t, 200, response.StatusCode)
+		})
+
+	})
+}
+
+func TestResetHandler(t *testing.T) {
+
+	Convey("Auth Reset Password Handler Group", t, func() {
+
+		Convey("Reset Old Password To New Password", func() {
+			payload := gin.H{
+				"email": "eduardo.wehner@greenholtadams.net",
+				"password": "qwerty12345",
+				"cpassword": "qwerty12345",
+			}
+
+			token := <-accessToken
+			rr := util.HttpTestRequest(router, http.MethodPost, "/api/v1/change-password/" +  token.(string), util.Strigify(payload))
+
+			response := util.Parse(rr.Body.Bytes())
+			logrus.Info(response)
+
+			assert.Equal(t, "Change new password successfully", response.Message)
 			assert.Equal(t, http.MethodPost, response.Method)
 			assert.Equal(t, 200, response.StatusCode)
 		})
