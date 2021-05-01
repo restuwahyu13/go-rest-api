@@ -142,9 +142,9 @@ func TestForgotHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "Email is not never registered", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 404, response.StatusCode)
+			assert.Equal(t, "Email is not never registered", response.Message)
 		})
 
 		Convey("Forgot Password If Account Is Not Active", func() {
@@ -159,9 +159,9 @@ func TestForgotHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "User account is not active", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 403, response.StatusCode)
+			assert.Equal(t, "User account is not active", response.Message)
 		})
 
 		Convey("Forgot Password To Get New Password", func() {
@@ -176,9 +176,9 @@ func TestForgotHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "Forgot password successfully", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 200, response.StatusCode)
+			assert.Equal(t, "Forgot password successfully", response.Message)
 		})
 
 	})
@@ -200,9 +200,9 @@ func TestResendHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "Email is not never registered", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 404, response.StatusCode)
+			assert.Equal(t, "Email is not never registered", response.Message)
 		})
 
 		Convey("Resend Token If Account Is Active", func() {
@@ -217,9 +217,9 @@ func TestResendHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "User account hash been active", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 403, response.StatusCode)
+			assert.Equal(t, "User account hash been active", response.Message)
 		})
 
 		Convey("Forgot Password To Get New Password", func() {
@@ -234,9 +234,9 @@ func TestResendHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "Resend new activation token successfully", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 200, response.StatusCode)
+			assert.Equal(t, "Resend new activation token successfully", response.Message)
 		})
 
 	})
@@ -261,9 +261,9 @@ func TestResetHandler(t *testing.T) {
 			response := util.Parse(rr.Body.Bytes())
 			logrus.Info(response)
 
-			assert.Equal(t, "Change new password successfully", response.Message)
+			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
-			assert.Equal(t, 200, response.StatusCode)
+			assert.Equal(t, "Change new password successfully", response.Message)
 		})
 
 	})
