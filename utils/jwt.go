@@ -23,12 +23,12 @@ type AccessToken struct {
 
 func Sign(Data map[string]interface{}, SecrePublicKeyEnvName string, ExpiredAt time.Duration) (string, error) {
 
-	expiredAt := time.Now().Add(time.Duration(time.Second) * ExpiredAt).Unix()
+	expiredAt := time.Now().Add(time.Duration(time.Minute) * ExpiredAt).Unix()
 
 	jwtSecretKey := GodotEnv(SecrePublicKeyEnvName)
 
 	claims := jwt.MapClaims{}
-	claims["expiredAt"] = expiredAt
+	claims["exp"] = expiredAt
 	claims["authorization"] = true
 
 	for i, v := range Data {

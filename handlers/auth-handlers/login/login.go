@@ -68,7 +68,7 @@ func (h *handler) LoginHandler(ctx *gin.Context) {
 
 			default:
 				accessTokenData := map[string]interface{}{"id": resultLogin.ID, "email": resultLogin.Email}
-				accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 86400)
+				accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 1)
 
 				if errToken != nil {
 					defer logrus.Error(errToken.Error())
