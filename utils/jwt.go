@@ -11,7 +11,7 @@ import (
 )
 
 type MetaToken struct {
-	ID            int
+	ID            string
 	Email         string
 	ExpiredAt     time.Time
 	Authorization bool

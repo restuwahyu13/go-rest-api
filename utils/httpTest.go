@@ -6,13 +6,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-func HttpTestRequest(handler http.Handler, method, url string, payload []byte) *httptest.ResponseRecorder {
-
-	gin.SetMode(gin.TestMode)
+func HttpTestRequest(method, url string, payload []byte) (*httptest.ResponseRecorder, *http.Request) {
 
 	request := make(chan *http.Request, 1)
 	errors := make(chan error, 1)
@@ -28,11 +25,10 @@ func HttpTestRequest(handler http.Handler, method, url string, payload []byte) *
 	}
 
 	if <-errors != nil {
-		logrus.Error(<-errors)
+		logrus.Fatal(<-errors)
 	}
 
 	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, <-request)
 
-	return rr
+	return rr, <-request
 }
