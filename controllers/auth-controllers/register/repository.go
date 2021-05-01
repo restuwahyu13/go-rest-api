@@ -23,16 +23,16 @@ func (r *repository) RegisterRepository(input *model.EntityUsers) (*model.Entity
 	db := r.db.Model(&users)
 	errorCode := make(chan string, 1)
 
-	users.Fullname = input.Fullname
-	users.Email = input.Email
-	users.Password = input.Password
-
 	checkUserAccount := db.Debug().Select("*").Where("email = ?", input.Email).Find(&users)
 
 	if checkUserAccount.RowsAffected > 0 {
 		errorCode <- "REGISTER_CONFLICT_409"
 		return &users, <-errorCode
 	}
+
+	users.Fullname = input.Fullname
+	users.Email = input.Email
+	users.Password = input.Password
 
 	addNewUser := db.Debug().Create(&users)
 	db.Commit()
