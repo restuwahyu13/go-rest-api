@@ -5,11 +5,9 @@ import (
 	"encoding/binary"
 	"net/http"
 	"net/http/httptest"
-
-	"github.com/sirupsen/logrus"
 )
 
-func HttpTestRequest(method, url string, payload []byte) (*httptest.ResponseRecorder, *http.Request) {
+func HttpTestRequest(method, url string, payload []byte) (*httptest.ResponseRecorder, *http.Request, error) {
 
 	request := make(chan *http.Request, 1)
 	errors := make(chan error, 1)
@@ -24,11 +22,7 @@ func HttpTestRequest(method, url string, payload []byte) (*httptest.ResponseReco
 		errors <- err
 	}
 
-	if <-errors != nil {
-		logrus.Fatal(<-errors)
-	}
-
 	rr := httptest.NewRecorder()
 
-	return rr, <-request
+	return rr, <-request, <-errors
 }

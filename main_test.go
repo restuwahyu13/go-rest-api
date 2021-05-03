@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	util "github.com/restuwahyu13/gin-rest-api/utils"
-	"github.com/sirupsen/logrus"
 	. "github.com/smartystreets/goconvey/convey"
 	"syreclabs.com/go/faker"
 )
@@ -26,12 +25,17 @@ func TestLoginHandler(t *testing.T) {
 				"password":  "qwerty12",
 			}
 
-			rr,req:= util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -44,12 +48,17 @@ func TestLoginHandler(t *testing.T) {
 				"password":  "testing13",
 			}
 
-			rr,req:= util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+			rr, req, err:= util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
-				router.ServeHTTP(rr, req)
+			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -62,12 +71,17 @@ func TestLoginHandler(t *testing.T) {
 				"password":  "testing",
 			}
 
-			rr,req:= util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
-				router.ServeHTTP(rr, req)
+			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -80,12 +94,17 @@ func TestLoginHandler(t *testing.T) {
 				"password":  "qwerty12345",
 			}
 
-			rr,req:= util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/login", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -111,12 +130,17 @@ func TestRegisterHandler(t *testing.T) {
 				"password":  "testing13",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/register", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/register", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -135,12 +159,17 @@ func TestForgotHandler(t *testing.T) {
 				"email": "santosi131@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -152,12 +181,17 @@ func TestForgotHandler(t *testing.T) {
 				"email": "santoso13@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -169,12 +203,17 @@ func TestForgotHandler(t *testing.T) {
 				"email": "samsul1@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/forgot-password", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -193,12 +232,17 @@ func TestResendHandler(t *testing.T) {
 				"email": "santosi131@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -210,12 +254,17 @@ func TestResendHandler(t *testing.T) {
 				"email": "restuwahyu13@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -227,12 +276,17 @@ func TestResendHandler(t *testing.T) {
 				"email": "santoso13@zetmail.com",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/resend-token", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -254,12 +308,17 @@ func TestResetHandler(t *testing.T) {
 			}
 
 			token := <-accessToken
-			rr,req := util.HttpTestRequest(http.MethodPost, "/api/v1/change-password/" +  token.(string), util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodPost, "/api/v1/change-password/" +  token.(string), util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, http.MethodPost, response.Method)
@@ -284,13 +343,18 @@ func TestCreateStudentHandler(t  *testing.T) {
 				"bid": "tehnik informatika",
 			}
 
-			rr,req := util.HttpTestRequest(http.MethodGet, "/api/v1/student", util.Strigify(payload))
+			rr, req, err := util.HttpTestRequest(http.MethodGet, "/api/v1/student", util.Strigify(payload))
+
+			if err != nil {
+				t.Error(err.Error())
+			}
+
 			req.Header.Set("Content-Type", "application/json")
 			req.Header.Set("Authorization", "Bearer " + token.(string))
 			router.ServeHTTP(rr, req)
 
 			response := util.Parse(rr.Body.Bytes())
-			logrus.Info(response)
+			t.Log(response)
 
 			assert.Equal(t, rr.Code, response.StatusCode)
 			assert.Equal(t, req.Method, response.Method)
@@ -309,13 +373,18 @@ func TestResultStudentHandler(t  *testing.T) {
 				token := <-accessToken
 				ID := "00f85d71-083b-4089-9d20-bb1054df4575"
 
-				rr,req := util.HttpTestRequest(http.MethodGet, "/api/v1/student/" + ID, nil)
+				rr, req, err := util.HttpTestRequest(http.MethodGet, "/api/v1/student/" + ID, nil)
+
+				if err != nil {
+					t.Error(err.Error())
+				}
+
 				req.Header.Set("Content-Type", "application/json")
 				req.Header.Set("Authorization", "Bearer " + token.(string))
 				router.ServeHTTP(rr, req)
 
 				response := util.Parse(rr.Body.Bytes())
-				logrus.Info(response)
+				t.Log(response)
 
 				assert.Equal(t, rr.Code, response.StatusCode)
 				assert.Equal(t, req.Method, response.Method)
@@ -327,13 +396,18 @@ func TestResultStudentHandler(t  *testing.T) {
 				token := <-accessToken
 				ID := "7a400ff9-6eca-4aba-90d8-5ad5ac21cc7d"
 
-				rr,req := util.HttpTestRequest(http.MethodGet, "/api/v1/student/" + ID, nil)
+				rr, req, err := util.HttpTestRequest(http.MethodGet, "/api/v1/student/" + ID, nil)
+
+				if err != nil {
+					t.Error(err.Error())
+				}
+
 				req.Header.Set("Content-Type", "application/json")
 				req.Header.Set("Authorization", "Bearer " + token.(string))
 				router.ServeHTTP(rr, req)
 
 				response := util.Parse(rr.Body.Bytes())
-				logrus.Info(response)
+				t.Log(response)
 
 				assert.Equal(t, rr.Code, response.StatusCode)
 				assert.Equal(t, req.Method, response.Method)

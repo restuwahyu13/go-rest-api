@@ -38,4 +38,4 @@ goprod:
 	${GO} build -o main .
 
 gotest:
-	${GO} test main.go main_test.go -v
+	${GO} test -v
