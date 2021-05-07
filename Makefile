@@ -39,3 +39,6 @@ goprod:
 
 gotest:
 	${GO} test -v
+
+goformat:
+	${GO} fmt ./...

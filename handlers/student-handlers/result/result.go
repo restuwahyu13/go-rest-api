@@ -25,13 +25,13 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 	config := gpc.ErrorConfig{
 		Options: []gpc.ErrorMetaConfig{
 			gpc.ErrorMetaConfig{
-				Tag: "required",
-				Field: "ID",
+				Tag:     "required",
+				Field:   "ID",
 				Message: "id is required on param",
 			},
 			gpc.ErrorMetaConfig{
-				Tag: "uuid",
-				Field: "ID",
+				Tag:     "uuid",
+				Field:   "ID",
 				Message: "params must be uuid format",
 			},
 		},
@@ -39,7 +39,7 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 
 	errResponse, errCount := util.GoValidator(&input, config.Options)
 
-	if errCount > 0  {
+	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
 		return
 	}
@@ -48,11 +48,11 @@ func (h *handler) ResultStudentHandler(ctx *gin.Context) {
 
 	switch errResultStudent {
 
-		case "RESULT_STUDENT_NOT_FOUND_404":
-			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusNotFound, http.MethodGet, nil)
-			return
+	case "RESULT_STUDENT_NOT_FOUND_404":
+		util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusNotFound, http.MethodGet, nil)
+		return
 
-		default:
-			util.APIResponse(ctx, "Result Student data successfully", http.StatusOK, http.MethodGet, resultStudent)
+	default:
+		util.APIResponse(ctx, "Result Student data successfully", http.StatusOK, http.MethodGet, resultStudent)
 	}
 }

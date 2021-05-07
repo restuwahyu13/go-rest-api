@@ -20,65 +20,65 @@ func NewHandlerActivation(service activationAuth.Service) *handler {
 
 func (h *handler) ActivationHandler(ctx *gin.Context) {
 
-		var input activationAuth.InputActivation
+	var input activationAuth.InputActivation
 
-		config := gpc.ErrorConfig{
-			Options: []gpc.ErrorMetaConfig{
-				gpc.ErrorMetaConfig{
-					Tag: "required",
-					Field: "Email",
-					Message: "email is required on body",
-				},
-				gpc.ErrorMetaConfig{
-					Tag: "email",
-					Field: "Email",
-					Message: "email format is not valid",
-				},
-				gpc.ErrorMetaConfig{
-					Tag: "required",
-					Field: "Token",
-					Message: "accessToken is required on params",
-				},
+	config := gpc.ErrorConfig{
+		Options: []gpc.ErrorMetaConfig{
+			gpc.ErrorMetaConfig{
+				Tag:     "required",
+				Field:   "Email",
+				Message: "email is required on body",
 			},
-		}
+			gpc.ErrorMetaConfig{
+				Tag:     "email",
+				Field:   "Email",
+				Message: "email format is not valid",
+			},
+			gpc.ErrorMetaConfig{
+				Tag:     "required",
+				Field:   "Token",
+				Message: "accessToken is required on params",
+			},
+		},
+	}
 
-		errResponse, errCount := util.GoValidator(input, config.Options)
+	errResponse, errCount := util.GoValidator(input, config.Options)
 
-		if errCount > 0  {
-			util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
-			return
-		}
+	if errCount > 0 {
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
+		return
+	}
 
-		token := ctx.Param("token")
-		resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
+	token := ctx.Param("token")
+	resultToken, errToken := util.VerifyToken(token, "JWT_SECRET")
 
-		if errToken != nil {
-			defer logrus.Error(errToken.Error())
-			util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
-			return
-		}
+	if errToken != nil {
+		defer logrus.Error(errToken.Error())
+		util.APIResponse(ctx, "Verified activation token failed", http.StatusBadRequest, http.MethodPost, nil)
+		return
+	}
 
-		result := util.DecodeToken(resultToken)
-		input.Email = result.Claims.Email
-		input.Active = true
+	result := util.DecodeToken(resultToken)
+	input.Email = result.Claims.Email
+	input.Active = true
 
-		_, errActivation := h.service.ActivationService(&input)
+	_, errActivation := h.service.ActivationService(&input)
 
-		switch errActivation {
+	switch errActivation {
 
-			case "ACTIVATION_NOT_FOUND_404":
-				util.APIResponse(ctx, "User account is not exist", http.StatusNotFound, http.MethodPost, nil)
-				return
+	case "ACTIVATION_NOT_FOUND_404":
+		util.APIResponse(ctx, "User account is not exist", http.StatusNotFound, http.MethodPost, nil)
+		return
 
-			case "ACTIVATION_ACTIVE_400":
-				util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
-				return
+	case "ACTIVATION_ACTIVE_400":
+		util.APIResponse(ctx, "User account hash been active please login", http.StatusBadRequest, http.MethodPost, nil)
+		return
 
-			case "ACTIVATION_ACCOUNT_FAILED_403":
-				util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
-				return
+	case "ACTIVATION_ACCOUNT_FAILED_403":
+		util.APIResponse(ctx, "Activation account failed", http.StatusForbidden, http.MethodPost, nil)
+		return
 
-			default:
-				util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
-		}
+	default:
+		util.APIResponse(ctx, "Activation account success", http.StatusOK, http.MethodPost, nil)
+	}
 }

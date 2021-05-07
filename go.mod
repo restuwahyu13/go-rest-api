@@ -20,6 +20,7 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/lib/pq v1.6.0 // indirect
 	github.com/restuwahyu13/go-playground-converter v0.0.5
+	github.com/restuwahyu13/go-supertest v0.0.3
 	github.com/sendgrid/rest v2.6.3+incompatible
 	github.com/sendgrid/sendgrid-go v3.8.0+incompatible
 	github.com/sirupsen/logrus v1.8.1

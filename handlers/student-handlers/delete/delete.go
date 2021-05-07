@@ -25,13 +25,13 @@ func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 	config := gpc.ErrorConfig{
 		Options: []gpc.ErrorMetaConfig{
 			gpc.ErrorMetaConfig{
-				Tag: "required",
-				Field: "ID",
+				Tag:     "required",
+				Field:   "ID",
 				Message: "id is required on param",
 			},
 			gpc.ErrorMetaConfig{
-				Tag: "uuid",
-				Field: "ID",
+				Tag:     "uuid",
+				Field:   "ID",
 				Message: "params must be uuid format",
 			},
 		},
@@ -39,7 +39,7 @@ func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 
 	errResponse, errCount := util.GoValidator(&input, config.Options)
 
-	if errCount > 0  {
+	if errCount > 0 {
 		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodDelete, errResponse)
 		return
 	}
@@ -48,15 +48,15 @@ func (h *handler) DeleteStudentHandler(ctx *gin.Context) {
 
 	switch errDeleteStudent {
 
-		case "DELETE_STUDENT_NOT_FOUND_404":
-			util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusForbidden, http.MethodDelete, nil)
-			return
+	case "DELETE_STUDENT_NOT_FOUND_404":
+		util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusForbidden, http.MethodDelete, nil)
+		return
 
-		case "DELETE_STUDENT_FAILED_403":
-			util.APIResponse(ctx, "Delete student data failed", http.StatusForbidden, http.MethodDelete, nil)
-			return
+	case "DELETE_STUDENT_FAILED_403":
+		util.APIResponse(ctx, "Delete student data failed", http.StatusForbidden, http.MethodDelete, nil)
+		return
 
-		default:
-			util.APIResponse(ctx, "Delete student data successfully", http.StatusOK, http.MethodDelete, nil)
+	default:
+		util.APIResponse(ctx, "Delete student data successfully", http.StatusOK, http.MethodDelete, nil)
 	}
 }

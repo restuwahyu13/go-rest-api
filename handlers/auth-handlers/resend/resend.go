@@ -20,61 +20,61 @@ func NewHandlerResend(service resendAuth.Service) *handler {
 
 func (h *handler) ResendHandler(ctx *gin.Context) {
 
-		var input resendAuth.InputResend
-		ctx.ShouldBindJSON(&input)
+	var input resendAuth.InputResend
+	ctx.ShouldBindJSON(&input)
 
-		config := gpc.ErrorConfig{
-			Options: []gpc.ErrorMetaConfig{
-				gpc.ErrorMetaConfig{
-					Tag: "required",
-					Field: "Email",
-					Message: "email is required on body",
-				},
-				gpc.ErrorMetaConfig{
-					Tag: "email",
-					Field: "Email",
-					Message: "email format is not valid",
-				},
+	config := gpc.ErrorConfig{
+		Options: []gpc.ErrorMetaConfig{
+			gpc.ErrorMetaConfig{
+				Tag:     "required",
+				Field:   "Email",
+				Message: "email is required on body",
 			},
-		}
+			gpc.ErrorMetaConfig{
+				Tag:     "email",
+				Field:   "Email",
+				Message: "email format is not valid",
+			},
+		},
+	}
 
-		errResponse, errCount := util.GoValidator(input, config.Options)
+	errResponse, errCount := util.GoValidator(input, config.Options)
 
-		if errCount > 0  {
-			util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
+	if errCount > 0 {
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodPost, errResponse)
+		return
+	}
+
+	resendResult, errResend := h.service.ResendService(&input)
+
+	switch errResend {
+
+	case "RESEND_NOT_FOUD_404":
+		util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
+		return
+
+	case "RESEND_ACTIVE_403":
+		util.APIResponse(ctx, "User account hash been active", http.StatusForbidden, http.MethodPost, nil)
+		return
+
+	default:
+		accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
+		accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
+
+		if errToken != nil {
+			defer logrus.Error(errToken.Error())
+			util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
 			return
 		}
 
-		resendResult, errResend := h.service.ResendService(&input)
+		_, errorSendEmail := util.SendGridMail(resendResult.Fullname, resendResult.Email, "Resend New Activation", "template_resend", accessToken)
 
-		switch errResend {
-
-			case "RESEND_NOT_FOUD_404":
-				util.APIResponse(ctx, "Email is not never registered", http.StatusNotFound, http.MethodPost, nil)
-				return
-
-			case "RESEND_ACTIVE_403":
-				util.APIResponse(ctx, "User account hash been active", http.StatusForbidden, http.MethodPost, nil)
-				return
-
-			default:
-				accessTokenData := map[string]interface{}{"id": resendResult.ID, "email": resendResult.Email}
-				accessToken, errToken := util.Sign(accessTokenData, "JWT_SECRET", 5)
-
-				if errToken != nil {
-					defer logrus.Error(errToken.Error())
-					util.APIResponse(ctx, "Generate accessToken failed", http.StatusBadRequest, http.MethodPost, nil)
-					return
-				}
-
-				_, errorSendEmail := util.SendGridMail(resendResult.Fullname, resendResult.Email, "Resend New Activation", "template_resend", accessToken)
-
-				if errorSendEmail != nil {
-					defer logrus.Error(errorSendEmail.Error())
-					util.APIResponse(ctx, "Sending email resend activation failed", http.StatusBadRequest, http.MethodPost, nil)
-					return
-				}
-
-				util.APIResponse(ctx, "Resend new activation token successfully", http.StatusOK, http.MethodPost, nil)
+		if errorSendEmail != nil {
+			defer logrus.Error(errorSendEmail.Error())
+			util.APIResponse(ctx, "Sending email resend activation failed", http.StatusBadRequest, http.MethodPost, nil)
+			return
 		}
+
+		util.APIResponse(ctx, "Resend new activation token successfully", http.StatusOK, http.MethodPost, nil)
+	}
 }

@@ -7,10 +7,10 @@ import (
 )
 
 type Response struct {
-	StatusCode int `json:"statusCode"`
-	Method     string `json:"method"`
-	Message    string  `json:"message"`
-	Data     interface{} `json:"data"`
+	StatusCode int         `json:"statusCode"`
+	Method     string      `json:"method"`
+	Message    string      `json:"message"`
+	Data       interface{} `json:"data"`
 }
 
 func Strigify(payload interface{}) []byte {
