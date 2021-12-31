@@ -21,6 +21,8 @@ func NewHandlerActivation(service activationAuth.Service) *handler {
 func (h *handler) ActivationHandler(ctx *gin.Context) {
 
 	var input activationAuth.InputActivation
+	input.Token = ctx.Param("token")
+	ctx.ShouldBindJSON(&input)
 
 	config := gpc.ErrorConfig{
 		Options: []gpc.ErrorMetaConfig{
