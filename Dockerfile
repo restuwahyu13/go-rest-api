@@ -1,33 +1,65 @@
-# ======================
-#  GO FIRST STAGE
-# ======================
-
+# Builder Stage
 FROM golang:latest as builder
-USER ${USER}
+
+# Set environment variables
+ENV USER=appuser
+
+# Create a non-root user
+RUN useradd -u 10001 ${USER}
+
+# Set the working directory
 WORKDIR /usr/src/app
-COPY go.mod \
-  go.sum ./
+
+# Copy the Go modules files
+COPY go.mod go.sum ./
+
+# Add missing entries to go.sum
+RUN go get github.com/mattn/go-isatty@v0.0.12
+RUN go get github.com/sendgrid/rest@v2.6.3+incompatible
+RUN go get golang.org/x/sys/unix@latest
+RUN go get golang.org/x/net/context@latest
+
+# Update and tidy Go modules
+RUN go mod tidy
 RUN go mod download
+
+# Copy the rest of the application code
 COPY . ./
+
+# Build the Go application
 ENV GO111MODULE="on" \
-  GOARCH="amd64" \
-  GOOS="linux" \
-  CGO_ENABLED="0"
-RUN apt-get clean \
-  && apt-get remove
+    GOARCH="amd64" \
+    GOOS="linux" \
+    CGO_ENABLED="0"
 
-# ======================
-#  GO FINAL STAGE
-# ======================
+RUN go build -o main .
 
-FROM builder
+# Final Stage
+FROM alpine:latest
+
+# Set environment variables
+ENV USER=appuser
+
+# Create a non-root user
+RUN adduser -D -u 10001 ${USER}
+
+# Set the working directory
 WORKDIR /usr/src/app
-RUN apt-get update \
-  && apt-get install -y \
-  make \
-  vim \
-  build-essential
-COPY --from=builder . ./usr/src/app
-RUN make goprod
+
+# Install necessary packages
+RUN apk --no-cache add ca-certificates
+
+# Copy the built executable from the builder stage
+COPY --from=builder /usr/src/app/main .
+
+# Change ownership to the non-root user
+RUN chown ${USER}:${USER} ./main
+
+# Switch to the non-root user
+USER ${USER}
+
+# Expose the port
 EXPOSE 4000
+
+# Command to run the executable
 CMD ["./main"]
